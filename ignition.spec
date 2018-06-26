@@ -79,7 +79,7 @@
 
 Name:           ignition
 Version:        0.26.0
-Release:        0.1.git%{shortcommit}%{?dist}
+Release:        0.2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -458,6 +458,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Jun 26 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.2.git7610725
+- Rename dustymabe/bootengine upstrem to dustymabe/ignition-dracut
+
 * Thu Jun 21 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.1.git7610725
 - First package for Fedora
 
