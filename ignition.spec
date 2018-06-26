@@ -69,8 +69,8 @@
 %global dracutprovider        github
 %global dracutprovider_tld    com
 %global dracutproject         dustymabe
-%global dracutrepo            bootengine
-# https://github.com/dustymabe/bootengine
+%global dracutrepo            ignition-dracut
+# https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
 %global dracutcommit          bf3b454db89bcff82d01b472786821bd458d3593
