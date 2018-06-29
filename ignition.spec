@@ -73,13 +73,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          bf3b454db89bcff82d01b472786821bd458d3593
+%global dracutcommit          17a201bb1e6fb412712df4808db553c4f93476d0
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.26.0
-Release:        0.2.git%{shortcommit}%{?dist}
+Release:        0.3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -316,6 +316,8 @@ initramfs on boot.
 %license LICENSE
 %{dracutlibdir}/modules.d/30ignition
 %{dracutlibdir}/modules.d/99journald-conf
+%{_sysconfdir}/grub.d/*
+%{_prefix}/lib/systemd/system/*.service
 ############## end dracut subpackage ##############
 
 %prep
@@ -355,8 +357,11 @@ install -p -m 0755 ./ignition %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 # dracut subpackage
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
-rm %{dracutrepo}-%{dracutcommit}/dracut/README.txt
-cp -r %{dracutrepo}-%{dracutcommit}/dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
+cd %{dracutrepo}-%{dracutcommit}
+rm dracut/README.txt
+cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
+install -D -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
+install -D -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -458,6 +463,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Jun 29 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.3.git7610725
+- Bump to ignition-dracut 17a201b
+
 * Tue Jun 26 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.2.git7610725
 - Rename dustymabe/bootengine upstrem to dustymabe/ignition-dracut
 
