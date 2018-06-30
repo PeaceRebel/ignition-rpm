@@ -79,7 +79,7 @@
 
 Name:           ignition
 Version:        0.26.0
-Release:        0.3.git%{shortcommit}%{?dist}
+Release:        0.4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -357,11 +357,13 @@ install -p -m 0755 ./ignition %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 # dracut subpackage
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
+install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
+install -d -p %{buildroot}/%{_sysconfdir}/grub.d
 cd %{dracutrepo}-%{dracutcommit}
 rm dracut/README.txt
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
-install -D -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
-install -D -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
+install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
+install -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -463,6 +465,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Jun 29 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.4.git7610725
+- Fix building on el7 (install -D not working)
+
 * Fri Jun 29 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.3.git7610725
 - Bump to ignition-dracut 17a201b
 
