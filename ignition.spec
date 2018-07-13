@@ -79,7 +79,7 @@
 
 Name:           ignition
 Version:        0.26.0
-Release:        0.4.git%{shortcommit}%{?dist}
+Release:        0.5.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -465,6 +465,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.26.0-0.5.git7610725
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Fri Jun 29 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.4.git7610725
 - Fix building on el7 (install -D not working)
 
