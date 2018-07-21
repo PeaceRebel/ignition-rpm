@@ -73,7 +73,7 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          17a201bb1e6fb412712df4808db553c4f93476d0
+%global dracutcommit          d664657cc2f733d8f54e9c0e69ba603babe55d92
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
@@ -465,6 +465,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sat Jul 21 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.6.git7610725
+- Bump to ignition-dracut d664657
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.26.0-0.5.git7610725
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
