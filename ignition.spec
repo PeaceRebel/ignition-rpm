@@ -79,7 +79,7 @@
 
 Name:           ignition
 Version:        0.26.0
-Release:        0.5.git%{shortcommit}%{?dist}
+Release:        0.6.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
