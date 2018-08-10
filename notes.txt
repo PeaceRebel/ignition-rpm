@@ -43,7 +43,7 @@ Spec file golang-github-coreos-ignition.spec at /home/vagrant/golang-github-core
 
 
 # build RPM
-$ rpmbuild -ba kompose.spec
+$ rpmbuild -ba ignition.spec
 
 # find a srpm in `$HOME/rpmbuild/SRPMS`
 # find a RPM in `$HOME/rpmbuild/RPM/arch/`

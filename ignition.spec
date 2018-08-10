@@ -55,7 +55,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          76107251acd117c6d3e5b4dae2b47f82f944984b
+%global commit          cc7ebe0b92d0fd4b6af2f67873e121894411a80d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -78,8 +78,8 @@
 
 
 Name:           ignition
-Version:        0.26.0
-Release:        0.6.git%{shortcommit}%{?dist}
+Version:        0.27.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -115,6 +115,7 @@ BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/ec2metadata)
 BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3)
+BuildRequires: golang(github.com/pborman/uuid)
 %endif
 
 # Main package Provides (generated with parsedeps.go)
@@ -191,6 +192,7 @@ BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
 BuildRequires: golang(github.com/coreos/go-semver/semver)
 BuildRequires: golang(github.com/coreos/go-systemd/dbus)
 BuildRequires: golang(github.com/coreos/go-systemd/unit)
+BuildRequires: golang(github.com/pborman/uuid)
 BuildRequires: golang(github.com/pin/tftp)
 BuildRequires: golang(github.com/sigma/vmw-guestinfo/rpcvmx)
 BuildRequires: golang(github.com/sigma/vmw-guestinfo/vmcheck)
@@ -212,6 +214,7 @@ Requires:      golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
 Requires:      golang(github.com/coreos/go-semver/semver)
 Requires:      golang(github.com/coreos/go-systemd/dbus)
 Requires:      golang(github.com/coreos/go-systemd/unit)
+Requires:      golang(github.com/pborman/uuid)
 Requires:      golang(github.com/pin/tftp)
 Requires:      golang(github.com/sigma/vmw-guestinfo/rpcvmx)
 Requires:      golang(github.com/sigma/vmw-guestinfo/vmcheck)
@@ -342,6 +345,8 @@ export GOPATH=$(pwd):%{gopath}
 export LDFLAGS=%{ldflags}
 # Tell ignition where to find chroot binary
 export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.chrootCmd=%{_sbindir}/chroot '
+# Enable SELinux relabeling
+export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.selinuxRelabel=true '
 
 echo "Building ignition..."
 %gobuild -o ./ignition %{import_path}/internal
@@ -465,6 +470,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Aug 10 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.27.0-1.gitcc7ebe0
+- New release 0.27.0
+
 * Sat Jul 21 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.6.git7610725
 - Bump to ignition-dracut d664657
 
