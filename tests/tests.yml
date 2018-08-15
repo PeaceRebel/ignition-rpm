@@ -1,0 +1,18 @@
+- hosts: localhost
+  roles:
+    - role: standard-test-basic
+      tags:
+        - classic
+      required-packages:
+        - ignition
+        - ignition-dracut
+      tests:
+        - ignition-run-version:
+           dir: ./
+           run: /usr/bin/ignition --version
+        - ignition-rpm-installed:
+           dir: ./
+           run: /usr/bin/rpm -q ignition
+        - ignition-dracut-rpm-installed:
+           dir: ./
+           run: /usr/bin/rpm -q ignition-dracut
