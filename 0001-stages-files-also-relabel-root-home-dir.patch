@@ -1,0 +1,28 @@
+From bff783ab7995370b254b9b461060f573ed031a80 Mon Sep 17 00:00:00 2001
+From: Jonathan Lebon <jonathan@jlebon.com>
+Date: Tue, 14 Aug 2018 15:38:25 -0400
+Subject: [PATCH] stages/files: also relabel /root home dir
+
+For the same reasons that `/home` is in that list. The difference is
+that the "root" user will always exist, but we might be touching and
+creating files there. For example, we might be adding an
+`.ssh/authorized_keys`, which will need to be relabeled.
+---
+ internal/exec/stages/files/passwd.go | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/internal/exec/stages/files/passwd.go b/internal/exec/stages/files/passwd.go
+index df16559..2eecd40 100644
+--- a/internal/exec/stages/files/passwd.go
++++ b/internal/exec/stages/files/passwd.go
+@@ -40,6 +40,7 @@ func (s *stage) createPasswd(config types.Config) error {
+ 			"/etc/gshadow*",
+ 			"/etc/.pwd.lock",
+ 			"/home",
++			"/root",
+ 		)
+ 	}
+ 
+-- 
+2.17.1
+

@@ -79,11 +79,13 @@
 
 Name:           ignition
 Version:        0.27.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+
+Patch0: 0001-stages-files-also-relabel-root-home-dir.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
@@ -327,6 +329,8 @@ initramfs on boot.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
+
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
 
@@ -470,6 +474,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Aug 15 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.27.0-2.gitcc7ebe0
+- Backport patch for /root relabeling
+  https://github.com/coreos/ignition/pull/613
+
 * Fri Aug 10 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.27.0-1.gitcc7ebe0
 - New release 0.27.0
 
