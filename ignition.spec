@@ -73,13 +73,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          d664657cc2f733d8f54e9c0e69ba603babe55d92
+%global dracutcommit          56aa51440a5e234edfbfdfc8e7cb48cfbccea168
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.27.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -474,6 +474,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Aug 17 2018 Dusty Mabe <dusty@dustymabe.com> - 0.27.0-3.gitcc7ebe0
+- Bump to ignition-dracut 56aa514
+
 * Wed Aug 15 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.27.0-2.gitcc7ebe0
 - Backport patch for /root relabeling
   https://github.com/coreos/ignition/pull/613
