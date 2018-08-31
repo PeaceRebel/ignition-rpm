@@ -47,7 +47,7 @@
 %define gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x %{?**};
 %endif
 
-# macros for ignition
+# macros for Ignition
 %global provider        github
 %global provider_tld    com
 %global project         coreos
@@ -55,7 +55,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          cc7ebe0b92d0fd4b6af2f67873e121894411a80d
+%global commit          f7079129b8651ac51dba14c3af65692bb413c1dd
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -78,14 +78,12 @@
 
 
 Name:           ignition
-Version:        0.27.0
-Release:        3.git%{shortcommit}%{?dist}
+Version:        0.28.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-
-Patch0: 0001-stages-files-also-relabel-root-home-dir.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
@@ -99,55 +97,55 @@ BuildRequires: libblkid-devel
 %if ! 0%{?with_bundled}
 # validate/main.go
 BuildRequires: golang(github.com/spf13/cobra)
-# Remaining dependencies not included in main packages
-BuildRequires: golang(github.com/coreos/go-systemd/unit)
-BuildRequires: golang(github.com/coreos/go-semver/semver)
-BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)
-BuildRequires: golang(github.com/pin/tftp)
-BuildRequires: golang(github.com/sigma/vmw-guestinfo/vmcheck)
-BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
-BuildRequires: golang(github.com/sigma/vmw-guestinfo/rpcvmx)
-BuildRequires: golang(github.com/coreos/go-systemd/dbus)
+# Remaining dependencies not included in main packages (sorted)
+BuildRequires: golang(github.com/ajeddeloh/go-json)
+BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/awserr)
+BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials)
+BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)
+BuildRequires: golang(github.com/aws/aws-sdk-go/aws/ec2metadata)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/session)
+BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3)
+BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
+BuildRequires: golang(github.com/coreos/go-semver/semver)
+BuildRequires: golang(github.com/coreos/go-systemd/dbus)
+BuildRequires: golang(github.com/coreos/go-systemd/unit)
+BuildRequires: golang(github.com/pborman/uuid)
+BuildRequires: golang(github.com/pin/tftp)
+BuildRequires: golang(github.com/sigma/vmw-guestinfo/rpcvmx)
+BuildRequires: golang(github.com/sigma/vmw-guestinfo/vmcheck)
 BuildRequires: golang(github.com/vincent-petithory/dataurl)
 BuildRequires: golang(github.com/vmware/vmw-ovflib)
-BuildRequires: golang(github.com/ajeddeloh/go-json)
-BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials)
-BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
-BuildRequires: golang(github.com/aws/aws-sdk-go/aws/ec2metadata)
-BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3)
-BuildRequires: golang(github.com/pborman/uuid)
 %endif
 
-# Main package Provides (generated with parsedeps.go)
+# Main package Provides (generated with parsedeps.go | sort)
 %if 0%{?with_bundled}  
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/awserr)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/awsutil)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/client)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/client/metadata)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/client)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/corehandlers)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/endpointcreds)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/stscreds)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/defaults)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/ec2metadata)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/endpoints)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/request)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/session)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/signer/v4)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/shareddefaults)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
-Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
-Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query/queryutil)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/rest)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/restxml)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
-Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3iface)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3manager)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
+Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/sts)) = %{version}-c861d27d0304a79f727e9a8a4e2ac1e74602fdc0
 Provides: bundled(golang(github.com/coreos/go-semver/semver)) = %{version}-294930c1e79c64e7dbe360054274fdad492c8cf5
 Provides: bundled(golang(github.com/coreos/go-systemd/dbus)) = %{version}-39ca1b05acc7ad1220e09f133283b8859a8b71ab
@@ -181,7 +179,7 @@ BuildArch:     noarch
 
 # devel subpackage BuildRequires
 %if 0%{?with_check} && ! 0%{?with_bundled}
-# These buildrequires are only for our tests (check)
+# These buildrequires are only for our tests (check) (sorted)
 BuildRequires: golang(github.com/ajeddeloh/go-json)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/awserr)
@@ -203,7 +201,7 @@ BuildRequires: golang(github.com/vmware/vmw-ovflib)
 %endif
 
 # devel subpackage Requires. This is basically the source code from
-# all of the libraries that ignition imports during build.
+# all of the libraries that ignition imports during build. (sorted)
 Requires:      golang(github.com/ajeddeloh/go-json)
 Requires:      golang(github.com/aws/aws-sdk-go/aws)
 Requires:      golang(github.com/aws/aws-sdk-go/aws/awserr)
@@ -223,26 +221,25 @@ Requires:      golang(github.com/sigma/vmw-guestinfo/vmcheck)
 Requires:      golang(github.com/vincent-petithory/dataurl)
 Requires:      golang(github.com/vmware/vmw-ovflib)
 
-# devel subpackage Provides
-Provides:      golang(%{import_path}/config/shared) = %{version}-%{release}
+# devel subpackage Provides (sorted)
 Provides:      golang(%{import_path}/config/shared/errors) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/shared/validations) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/shared) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/util) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/v1) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v1/types) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/v2_0) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/v1) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v2_0/types) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/v2_1) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/v2_0) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v2_1/types) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/v2_2) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/v2_1) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v2_2/types) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/v2_3_experimental) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/v2_2) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v2_3_experimental/types) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/validate) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/v2_3_experimental) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/validate/astjson) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/validate/astnode) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/validate/report) = %{version}-%{release}
-Provides:      golang(%{import_path}/tests) = %{version}-%{release}
+Provides:      golang(%{import_path}/config/validate) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/negative/files) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/negative/filesystems) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/negative/general) = %{version}-%{release}
@@ -265,6 +262,7 @@ Provides:      golang(%{import_path}/tests/positive/timeouts) = %{version}-%{rel
 Provides:      golang(%{import_path}/tests/register) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/registry) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/types) = %{version}-%{release}
+Provides:      golang(%{import_path}/tests) = %{version}-%{release}
 
 %description devel
 %{summary}
@@ -329,7 +327,6 @@ initramfs on boot.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -455,25 +452,27 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %files
 %license LICENSE
-%doc CONTRIBUTING.md code-of-conduct.md README.md doc/
+%doc README.md code-of-conduct.md CONTRIBUTING.md doc/
 %{_bindir}/%{name}
 %{_bindir}/%{name}-validate
-
 
 %if 0%{?with_devel}
 %files devel -f devel.file-list
 %license LICENSE
-%doc CONTRIBUTING.md code-of-conduct.md README.md
+%doc README.md code-of-conduct.md CONTRIBUTING.md
 %dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
 %endif
 
 %if 0%{?with_unit_test} && 0%{?with_devel}
 %files unit-test-devel -f unit-test-devel.file-list
 %license LICENSE
-%doc CONTRIBUTING.md code-of-conduct.md README.md
+%doc README.md code-of-conduct.md CONTRIBUTING.md
 %endif
 
 %changelog
+* Thu Aug 30 2018 Andrew Jeddeloh <andrewjeddeloh@redhat.com> - 0.28.0-3.gitf707912
+- New release 0.28.0
+
 * Fri Aug 17 2018 Dusty Mabe <dusty@dustymabe.com> - 0.27.0-3.gitcc7ebe0
 - Bump to ignition-dracut 56aa514
 
