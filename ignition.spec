@@ -67,13 +67,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          56aa51440a5e234edfbfdfc8e7cb48cfbccea168
+%global dracutcommit          d056287951bd6823d6c087a81b63c9eb271ab240
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.28.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -464,6 +464,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Aug 30 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-2.gitf707912
+- Bump to ignition-dracut d056287
+- * 3f41219 dracut/ignition: remove CL-legacy udev references
+- * 92ef9dd coreos-firstboot-complete: RemainAfterExit=yes
+
 * Thu Aug 30 2018 Andrew Jeddeloh <andrewjeddeloh@redhat.com> - 0.28.0-1.gitf707912
 - New release 0.28.0
 
