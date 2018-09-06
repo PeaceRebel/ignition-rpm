@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        0.28.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -86,6 +86,11 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
 # add non golang BuildRequires that weren't detected
 BuildRequires: libblkid-devel
+
+# Requires for 'disks' stage
+Requires: btrfs-progs
+Requires: dosfstools
+Requires: gdisk
 
 # Main rpm package BuildRequires
 %if ! 0%{?with_bundled}
@@ -464,6 +469,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Sep 06 2018 Luca Bruno <lucab@fedoraproject.org> - 0.28.0-3.gitf707912
+- Add requires for disks stage
+
 * Thu Aug 30 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-2.gitf707912
 - Bump to ignition-dracut d056287
 - * 3f41219 dracut/ignition: remove CL-legacy udev references
