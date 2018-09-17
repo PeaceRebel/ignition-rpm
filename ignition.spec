@@ -73,11 +73,13 @@
 
 Name:           ignition
 Version:        0.28.0
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+
+Patch0: 0001-stages-files-relabel-var-home-and-var-roothome.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
@@ -326,6 +328,7 @@ initramfs on boot.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -469,6 +472,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Sep 17 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-4.gitf707912
+- Backport patch for relabeling /var/home on FCOS
+  https://github.com/coreos/fedora-coreos-config/issues/2
+
 * Thu Sep 06 2018 Luca Bruno <lucab@fedoraproject.org> - 0.28.0-3.gitf707912
 - Add requires for disks stage
 

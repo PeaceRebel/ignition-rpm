@@ -1,0 +1,50 @@
+From 45b75181389d2bc357de524dc32ede787222dedc Mon Sep 17 00:00:00 2001
+From: Jonathan Lebon <jonathan@jlebon.com>
+Date: Fri, 14 Sep 2018 15:27:37 -0400
+Subject: [PATCH] stages/files: relabel /var/home and /var/roothome
+
+The behaviour of how `restorecon` handles symlinks changed between RHCOS
+and FCOS. More specifically, `restorecon` will follow symlinks that are
+part of a given path, but not if the target path is a symlink itself.
+On OSTree-based systems, `/home` and `/root` are just symlinks, so the
+newer `restorecon` wasn't actually relabeling anything under there.
+
+Add the real paths to the list of dirs to relabel and add `-i` so that
+it's not a fatal error on non-OSTree-based systems.
+
+Closes: coreos/fedora-coreos-config#2
+---
+ internal/exec/stages/files/files.go  | 2 +-
+ internal/exec/stages/files/passwd.go | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/internal/exec/stages/files/files.go b/internal/exec/stages/files/files.go
+index 077d383..609a0e8 100644
+--- a/internal/exec/stages/files/files.go
++++ b/internal/exec/stages/files/files.go
+@@ -146,7 +146,7 @@ OnFailureJobMode=replace-irreversibly
+ 
+ [Service]
+ Type=oneshot
+-ExecStart=` + distro.RestoreconCmd() + ` -0vRf /etc/selinux/ignition.relabel
++ExecStart=` + distro.RestoreconCmd() + ` -0vRif /etc/selinux/ignition.relabel
+ ExecStart=/usr/bin/rm /etc/selinux/ignition.relabel
+ RemainAfterExit=yes`,
+ 	}
+diff --git a/internal/exec/stages/files/passwd.go b/internal/exec/stages/files/passwd.go
+index 2eecd40..1ae0f02 100644
+--- a/internal/exec/stages/files/passwd.go
++++ b/internal/exec/stages/files/passwd.go
+@@ -41,6 +41,9 @@ func (s *stage) createPasswd(config types.Config) error {
+ 			"/etc/.pwd.lock",
+ 			"/home",
+ 			"/root",
++			// for OSTree-based systems (newer restorecon doesn't follow symlinks)
++			"/var/home",
++			"/var/roothome",
+ 		)
+ 	}
+ 
+-- 
+2.19.0
+
