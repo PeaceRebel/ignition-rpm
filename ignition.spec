@@ -67,13 +67,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          d056287951bd6823d6c087a81b63c9eb271ab240
+%global dracutcommit          8c85eb38bdce5014e3f608563c99176216b4bed5
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.28.0
-Release:        4.git%{shortcommit}%{?dist}
+Release:        5.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -474,6 +474,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Sep 24 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-5.gitf707912
+- Remove requires for btrfs on !fedora
+- Bump to ignition-dracut 8c85eb3
+- * 26f2396 journal: Don't log to console AND kmsg
+
 * Mon Sep 17 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-4.gitf707912
 - Backport patch for relabeling /var/home on FCOS
   https://github.com/coreos/fedora-coreos-config/issues/2
