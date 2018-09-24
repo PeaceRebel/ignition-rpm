@@ -90,7 +90,9 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires: libblkid-devel
 
 # Requires for 'disks' stage
+%if 0%{?fedora}
 Requires: btrfs-progs
+%endif
 Requires: dosfstools
 Requires: gdisk
 
