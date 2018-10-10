@@ -1,0 +1,35 @@
+From bab77f2fa4ecbc1d0428dd6e8a54d34848d78fd1 Mon Sep 17 00:00:00 2001
+From: Jonathan Lebon <jonathan@jlebon.com>
+Date: Thu, 27 Sep 2018 16:40:24 -0400
+Subject: [PATCH] stages/files: relabel files before systemd-sysctl
+
+This is a workaround for an inherent issue with the current relabeling
+approach (see #635). `systemd-sysctl.service` is definitely one of those
+early services that have a high probability of reading files from `/etc`
+before it's relabeled.
+
+They're both pulled in by `sysinit.target`, but
+`ignition-relabel.service` has an additional `After=local-fs.target`
+which makes it likelier to run later (also see #635 about that). So for
+now, let's just hack around this by making sure `systemd-sysctl` runs
+after us.
+---
+ internal/exec/stages/files/files.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/internal/exec/stages/files/files.go b/internal/exec/stages/files/files.go
+index 609a0e8..24676bc 100644
+--- a/internal/exec/stages/files/files.go
++++ b/internal/exec/stages/files/files.go
+@@ -138,7 +138,7 @@ func (s *stage) addRelabelUnit(config types.Config) error {
+ Description=Relabel files created by Ignition
+ DefaultDependencies=no
+ After=local-fs.target
+-Before=sysinit.target
++Before=sysinit.target systemd-sysctl.service
+ ConditionSecurity=selinux
+ ConditionPathExists=/etc/selinux/ignition.relabel
+ OnFailure=emergency.target
+-- 
+2.17.1
+

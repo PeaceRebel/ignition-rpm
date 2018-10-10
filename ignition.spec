@@ -73,13 +73,14 @@
 
 Name:           ignition
 Version:        0.28.0
-Release:        6.git%{shortcommit}%{?dist}
+Release:        7.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
 Patch0: 0001-stages-files-relabel-var-home-and-var-roothome.patch
+Patch1: 0001-stages-files-relabel-files-before-systemd-sysctl.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
@@ -331,6 +332,7 @@ initramfs on boot.
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
 %patch0 -p1
+%patch1 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -474,6 +476,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Oct 10 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-7.gitf707912
+- Backport patch for handling sysctl files correctly
+  https://github.com/coreos/coreos-assembler/pull/128
+  https://github.com/openshift/machine-config-operator/pull/123
+
 * Wed Sep 26 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-6.gitf707912
 - Bump to ignition-dracut c09ce6f
 - * ce9f648 30ignition: add support for ignition-disks
