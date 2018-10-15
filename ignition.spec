@@ -67,13 +67,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          c09ce6f72313bb69f42951244f915e8852ee80a5
+%global dracutcommit          4bdfb342181c3d746c1bb47fc613f9967a8a24a8
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.28.0
-Release:        7.git%{shortcommit}%{?dist}
+Release:        8.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -476,6 +476,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Oct 15 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-8.gitf707912
+- Bump to ignition-dracut 4bdfb34
+- * 6d0763a module-setup: Make mkfs.btrfs optional
+
 * Wed Oct 10 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-7.gitf707912
 - Backport patch for handling sysctl files correctly
   https://github.com/coreos/coreos-assembler/pull/128
