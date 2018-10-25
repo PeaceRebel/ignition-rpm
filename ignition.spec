@@ -67,13 +67,13 @@
 # https://github.com/dustymabe/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          4bdfb342181c3d746c1bb47fc613f9967a8a24a8
+%global dracutcommit          7ee64ca0b54f9504fb319c6a1ddf673dde957713
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.28.0
-Release:        8.git%{shortcommit}%{?dist}
+Release:        9.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -476,6 +476,14 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Oct 25 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-9.gitf707912
+- Bump to ignition-dracut 7ee64ca
+- * 3ec0b39 remove ignition-remount-sysroot.service files
+  * 66335f2 ignition: run files stage at original CL ordering
+  * 0301a03 ignition-disks.service: drop Requires=network.target
+  * a0bc135 ignition-ask-var-mount.service: use RemainAfterExit=yes
+  * ecf5779 module-setup.sh: explicitly install qemu_fw_cfg
+
 * Mon Oct 15 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-8.gitf707912
 - Bump to ignition-dracut 4bdfb34
 - * 6d0763a module-setup: Make mkfs.btrfs optional
