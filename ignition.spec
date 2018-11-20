@@ -62,18 +62,18 @@
 %global dracutlibdir          %{_prefix}/lib/dracut
 %global dracutprovider        github
 %global dracutprovider_tld    com
-%global dracutproject         dustymabe
+%global dracutproject         coreos
 %global dracutrepo            ignition-dracut
-# https://github.com/dustymabe/ignition-dracut
+# https://github.com/coreos/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          decf63fb4e0d0a17485ed930984d1d97ebc0bb0b
+%global dracutcommit          7b83454d48ca5f73d82dbd21d0a03fff7974ca0b
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.28.0
-Release:        10.git%{shortcommit}%{?dist}
+Release:        11.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -476,6 +476,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Nov 20 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-11.git7b83454
+- Bump to ignition-dracut 7b83454
+
 * Thu Oct 25 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-10.gitf707912
 - Bump to ignition-dracut decf63f
 - * 03d8438 30ignition: only instmods if module available
