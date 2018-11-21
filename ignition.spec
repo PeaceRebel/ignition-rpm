@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        0.28.0
-Release:        11.git%{shortcommit}%{?dist}
+Release:        12.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -476,6 +476,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Nov 21 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.28.0-12.gitf707912
+- Rebuild for protobuf 3.6
+
 * Tue Nov 20 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-11.git7b83454
 - Bump to ignition-dracut 7b83454
 
