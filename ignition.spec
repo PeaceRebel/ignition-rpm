@@ -477,7 +477,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %changelog
 * Wed Nov 21 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.28.0-12.gitf707912
-- Rebuild for protobuf 3.6
+- Rebuild for protobuf 3.6 in rawhide (f30)
 
 * Tue Nov 20 2018 Jonathan Lebon <jonathan@jlebon.com> - 0.28.0-11.git7b83454
 - Bump to ignition-dracut 7b83454
