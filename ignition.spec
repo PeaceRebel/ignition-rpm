@@ -73,17 +73,25 @@
 
 Name:           ignition
 Version:        0.29.1
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
 
+# For RHEL7 we'll want to specify list of arches since there is no
+# go_arches macro. We'll also want to make sure we pull in golang 1.10
+# require golang >= 1.10
+%if 0%{?rhel} <= 7 && 0%{?centos} == 0
+ExclusiveArch: x86_64 ppc64le aarch64 s390x
+BuildRequires: golang >= 1.10
+%else
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
+%endif
 
 # add non golang BuildRequires that weren't detected
 BuildRequires: libblkid-devel
@@ -474,6 +482,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Dec 11 2018 Dusty Mabe <dusty@dustymabe.com> - 0.29.1-2.gitb1ab0b2
+- require golang >= 1.10 and specify architecture list for RHEL7
+
 * Tue Dec 11 2018 Andrew Jeddeloh <andrew.jeddeloh@redhat.com> - 0.29.1-1.gitb1ab0b2
 - New release 0.29.1
 
