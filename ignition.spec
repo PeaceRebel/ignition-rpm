@@ -73,17 +73,17 @@
 
 Name:           ignition
 Version:        0.29.1
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
-
-# For RHEL7 we'll want to specify list of arches since there is no
-# go_arches macro. We'll also want to make sure we pull in golang 1.10
-# require golang >= 1.10
+# For RHEL7 we'll want to specify gopath and list of arches since there is no
+# gopath or go_arches macro.  We'll also want to make sure we pull in golang
+# 1.10 require golang >= 1.10
 %if 0%{?rhel} <= 7 && 0%{?centos} == 0
+%define gopath %{_datadir}/gocode
 ExclusiveArch: x86_64 ppc64le aarch64 s390x
 BuildRequires: golang >= 1.10
 %else
@@ -482,6 +482,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Dec 14 2018 Michael Nguyen <mnguyen@redhat.com> - 0.29.1-3.gitb1ab0b2
+- define gopath for RHEL7
+
 * Tue Dec 11 2018 Dusty Mabe <dusty@dustymabe.com> - 0.29.1-2.gitb1ab0b2
 - require golang >= 1.10 and specify architecture list for RHEL7
 
