@@ -2,7 +2,7 @@
 #     gofed repo2spec --detect github.com/coreos/ignition --commit f7079129b8651ac51dba14c3af65692bb413c1dd  --with-extra --with-build -f
 # With:
 #     gofed/gofed:v1.0.1 docker image
-# Modified by hand for 0.29.1
+# Modified by hand for 0.30.0
 
 # If any of the following macros should be set otherwise,
 # you can wrap any of them with the following conditions:
@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          b1ab0b28d4aa17535b6503b8d97ed81953da20e5
+%global commit          308d7a05213ae66a9317c90c042eec366bba10fb
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -72,8 +72,8 @@
 
 
 Name:           ignition
-Version:        0.29.1
-Release:        3.git%{shortcommit}%{?dist}
+Version:        0.30.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -482,6 +482,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sat Dec 15 2018 Benjamin Gilbert <bgilbert@redhat.com> - 0.30.0-1.git308d7a0
+- New release 0.30.0
+
 * Fri Dec 14 2018 Michael Nguyen <mnguyen@redhat.com> - 0.29.1-3.gitb1ab0b2
 - define gopath for RHEL7
 
