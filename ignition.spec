@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          7b83454d48ca5f73d82dbd21d0a03fff7974ca0b
+%global dracutcommit          fa7131b6d3cbc5017449be6e6359a054327c354a
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.30.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -482,6 +482,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Jan 28 2019 Dusty Mabe <dusty@dustymabe.com> - 0.30.0-2.git308d7a0
+- Bump to ignition-dracut fa7131b
+- * 7579b92 journal: add clarifying comment for context
+  * a6551f1 Remount /sysroot rw (#38)
+  * ignition-firstboot-complete.service: Remount /boot rw
+
 * Sat Dec 15 2018 Benjamin Gilbert <bgilbert@redhat.com> - 0.30.0-1.git308d7a0
 - New release 0.30.0
 
