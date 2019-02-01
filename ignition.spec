@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        0.30.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -482,6 +482,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.30.0-3.git308d7a0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Mon Jan 28 2019 Dusty Mabe <dusty@dustymabe.com> - 0.30.0-2.git308d7a0
 - Bump to ignition-dracut fa7131b
 - * 7579b92 journal: add clarifying comment for context
