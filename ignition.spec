@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          fa7131b6d3cbc5017449be6e6359a054327c354a
+%global dracutcommit          2c699252247fd4eb786b66db30a30b777dcd8468
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.30.0
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -482,6 +482,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Feb 15 2019 Dusty Mabe <dusty@dustymabe.com> - 0.30.0-4.git308d7a0
+- Bump to ignition-dracut 2c69925
+- * support platform configs and user configs in /boot
+    ^ https://github.com/coreos/ignition-dracut/pull/43
+  * Add ability to parse config.ign file on boot
+    ^ https://github.com/coreos/ignition-dracut/pull/42
+
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.30.0-3.git308d7a0
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
