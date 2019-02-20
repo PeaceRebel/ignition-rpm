@@ -2,7 +2,7 @@
 #     gofed repo2spec --detect github.com/coreos/ignition --commit f7079129b8651ac51dba14c3af65692bb413c1dd  --with-extra --with-build -f
 # With:
 #     gofed/gofed:v1.0.1 docker image
-# Modified by hand for 0.30.0
+# Modified by hand for 0.31.0
 
 # If any of the following macros should be set otherwise,
 # you can wrap any of them with the following conditions:
@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          308d7a05213ae66a9317c90c042eec366bba10fb
+%global commit          f59a653629be8b1825ed4ff2f9e3d21aa87bd85a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -72,8 +72,8 @@
 
 
 Name:           ignition
-Version:        0.30.0
-Release:        4.git%{shortcommit}%{?dist}
+Version:        0.31.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -105,8 +105,6 @@ Requires: gdisk
 
 # Main rpm package BuildRequires
 %if ! 0%{?with_bundled}
-# validate/main.go
-BuildRequires: golang(github.com/spf13/cobra)
 # Remaining dependencies not included in main packages (sorted)
 BuildRequires: golang(github.com/ajeddeloh/go-json)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
@@ -482,6 +480,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Feb 20 2019 Andrew Jeddeloh <andrew.jeddeloh@redhat.com> - 0.31.0-1.gitf59a653
+- New release 0.31.0
+
 * Fri Feb 15 2019 Dusty Mabe <dusty@dustymabe.com> - 0.30.0-4.git308d7a0
 - Bump to ignition-dracut 2c69925
 - * support platform configs and user configs in /boot
