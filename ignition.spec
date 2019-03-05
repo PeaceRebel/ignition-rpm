@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        0.31.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -318,6 +318,8 @@ Requires: dracut
 Requires: dracut-network
 BuildArchitectures: noarch
 
+Patch0: 0001-grub-find-boot-partition-and-use-it-directly.patch
+
 %description dracut
 Dracut modules for ignition to enable ignition services to run in the
 initramfs on boot.
@@ -338,6 +340,8 @@ initramfs on boot.
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
+cd %{dracutrepo}-%{dracutcommit}
+%patch0 -p1
 
 %build
 # Set up PWD as a proper import path for go
@@ -480,6 +484,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Mar 04 2019 Dusty Mabe <dusty@dustymabe.com> - 0.31.0-2.gitf59a653
+- ignition-dracut: backport patch for finding ignition.firstboot file on UEFI systems
+  https://github.com/coreos/ignition-dracut/pull/52
+
 * Wed Feb 20 2019 Andrew Jeddeloh <andrew.jeddeloh@redhat.com> - 0.31.0-1.gitf59a653
 - New release 0.31.0
 
