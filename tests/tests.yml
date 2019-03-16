@@ -9,7 +9,7 @@
       tests:
         - ignition-run-version:
            dir: ./
-           run: /usr/bin/ignition --version
+           run: /usr/lib/dracut/modules.d/30ignition/ignition --version
         - ignition-rpm-installed:
            dir: ./
            run: /usr/bin/rpm -q ignition

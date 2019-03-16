@@ -82,6 +82,8 @@ Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracu
 
 Patch0: 0001-grub-find-boot-partition-and-use-it-directly.patch
 Patch1: 0001-02_ignition_firstboot-Enable-networking-if-Ignition-.patch
+# https://github.com/coreos/ignition-dracut/pull/56
+Patch2: dracut-ignition-not-in-path.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -343,6 +345,7 @@ This package contains a tool for validating Ignition configurations.
 cd %{dracutrepo}-%{dracutcommit}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 mv LICENSE ../LICENSE.dracut
 
 
@@ -372,11 +375,6 @@ echo "Building ignition-validate..."
 
 
 %install
-# ignition
-install -d -p %{buildroot}%{_bindir}
-install -p -m 0755 ./ignition %{buildroot}%{_bindir}
-install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
-
 # ignition-dracut
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
@@ -387,6 +385,13 @@ cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
 install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
 install -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
 popd >/dev/null
+
+# ignition
+install -d -p %{buildroot}%{_bindir}
+install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
+# The ignition binary is only for dracut, and is dangerous to run from
+# the command line.  Install directly into the dracut module dir.
+install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -472,7 +477,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %files
 %license LICENSE LICENSE.dracut
 %doc README.md doc/
-%{_bindir}/%{name}
 %{dracutlibdir}/modules.d/30ignition
 %{dracutlibdir}/modules.d/99journald-conf
 %{_sysconfdir}/grub.d/*
@@ -499,6 +503,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %changelog
 * Mon Mar 18 2019 Benjamin Gilbert <bgilbert@backtick.net> - 0.31.0-4.gitf59a653
 - Move dracut modules into main ignition package
+- Move ignition binary out of the PATH
 - Move ignition-validate into a subpackage
 - Include ignition-dracut license file
 - Drop developer docs from base package
