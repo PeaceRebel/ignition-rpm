@@ -370,11 +370,12 @@ install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
 install -d -p %{buildroot}/%{_sysconfdir}/grub.d
-cd %{dracutrepo}-%{dracutcommit}
+pushd %{dracutrepo}-%{dracutcommit} >/dev/null
 rm dracut/README.txt
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
 install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
 install -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
+popd >/dev/null
 
 # source codes for building projects
 %if 0%{?with_devel}
