@@ -73,11 +73,15 @@
 
 Name:           ignition
 Version:        0.31.0
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
+
+Patch0: 0001-grub-find-boot-partition-and-use-it-directly.patch
+Patch1: 0001-02_ignition_firstboot-Enable-networking-if-Ignition-.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -312,27 +316,16 @@ providing packages with %{import_path} prefix.
 Summary:  Dracut modules for ignition
 License:  BSD
 URL:      https://%{dracutprovider_prefix}
-Source1:  https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
 Requires: %{name} = %{version}-%{release}
 Requires: dracut
 Requires: dracut-network
 BuildArchitectures: noarch
 
-Patch0: 0001-grub-find-boot-partition-and-use-it-directly.patch
-Patch1: 0001-02_ignition_firstboot-Enable-networking-if-Ignition-.patch
 
 %description dracut
 Dracut modules for ignition to enable ignition services to run in the
 initramfs on boot.
 
-%files dracut
-%doc README.md
-%license LICENSE
-%{dracutlibdir}/modules.d/30ignition
-%{dracutlibdir}/modules.d/99journald-conf
-%{_sysconfdir}/grub.d/*
-%{_prefix}/lib/systemd/system/*.service
-############## end dracut subpackage ##############
 
 %prep
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
@@ -472,6 +465,14 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_bindir}/%{name}
 %{_bindir}/%{name}-validate
 
+%files dracut
+%doc README.md
+%license LICENSE
+%{dracutlibdir}/modules.d/30ignition
+%{dracutlibdir}/modules.d/99journald-conf
+%{_sysconfdir}/grub.d/*
+%{_prefix}/lib/systemd/system/*.service
+
 %if 0%{?with_devel}
 %files devel -f devel.file-list
 %license LICENSE
@@ -486,6 +487,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Mar 18 2019 Benjamin Gilbert <bgilbert@backtick.net> - 0.31.0-4.gitf59a653
+- Move some dracut subpackage configuration within the specfile
+
 * Mon Mar 18 2019 Colin Walters <walters@verbum.org> - 0.31.0-3.gitf59a653
 - Backport patch for networking
 
