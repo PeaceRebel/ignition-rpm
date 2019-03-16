@@ -471,7 +471,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %files
 %license LICENSE LICENSE.dracut
-%doc README.md code-of-conduct.md CONTRIBUTING.md doc/
+%doc README.md doc/
 %{_bindir}/%{name}
 %{dracutlibdir}/modules.d/30ignition
 %{dracutlibdir}/modules.d/99journald-conf
@@ -501,6 +501,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 - Move dracut modules into main ignition package
 - Move ignition-validate into a subpackage
 - Include ignition-dracut license file
+- Drop developer docs from base package
 
 * Mon Mar 18 2019 Colin Walters <walters@verbum.org> - 0.31.0-3.gitf59a653
 - Backport patch for networking
