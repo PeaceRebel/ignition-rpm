@@ -343,6 +343,8 @@ This package contains a tool for validating Ignition configurations.
 cd %{dracutrepo}-%{dracutcommit}
 %patch0 -p1
 %patch1 -p1
+mv LICENSE ../LICENSE.dracut
+
 
 %build
 # Set up PWD as a proper import path for go
@@ -468,7 +470,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{!?_licensedir:%global license %doc}
 
 %files
-%license LICENSE
+%license LICENSE LICENSE.dracut
 %doc README.md code-of-conduct.md CONTRIBUTING.md doc/
 %{_bindir}/%{name}
 %{dracutlibdir}/modules.d/30ignition
@@ -498,6 +500,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 * Mon Mar 18 2019 Benjamin Gilbert <bgilbert@backtick.net> - 0.31.0-4.gitf59a653
 - Move dracut modules into main ignition package
 - Move ignition-validate into a subpackage
+- Include ignition-dracut license file
 
 * Mon Mar 18 2019 Colin Walters <walters@verbum.org> - 0.31.0-3.gitf59a653
 - Backport patch for networking
