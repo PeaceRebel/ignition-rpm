@@ -5,7 +5,7 @@
         - classic
       required-packages:
         - ignition
-        - ignition-dracut
+        - ignition-validate
       tests:
         - ignition-run-version:
            dir: ./
@@ -13,6 +13,6 @@
         - ignition-rpm-installed:
            dir: ./
            run: /usr/bin/rpm -q ignition
-        - ignition-dracut-rpm-installed:
+        - ignition-validate-rpm-installed:
            dir: ./
-           run: /usr/bin/rpm -q ignition-dracut
+           run: /usr/bin/rpm -q ignition-validate

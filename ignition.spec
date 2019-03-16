@@ -75,7 +75,7 @@ Name:           ignition
 Version:        0.31.0
 Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
-License:        ASL 2.0
+License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
@@ -106,6 +106,10 @@ Requires: btrfs-progs
 %endif
 Requires: dosfstools
 Requires: gdisk
+Requires: dracut
+Requires: dracut-network
+
+Obsoletes: ignition-dracut < 0.31.0-3
 
 # Main rpm package BuildRequires
 %if ! 0%{?with_bundled}
@@ -186,6 +190,7 @@ and applies the configuration.
 %package devel
 Summary:       %{summary}
 BuildArch:     noarch
+License:       ASL 2.0
 
 # devel subpackage BuildRequires
 %if 0%{?with_check} && ! 0%{?with_bundled}
@@ -286,6 +291,7 @@ building other packages which use import path with
 %if 0%{?with_unit_test} && 0%{?with_devel}
 %package unit-test-devel
 Summary:         Unit tests for %{name} package
+License:         ASL 2.0
 %if 0%{?with_check}
 #Here comes all BuildRequires: PACKAGE the unit tests
 #in %%check section need for running
@@ -308,21 +314,23 @@ providing packages with %{import_path} prefix.
 %endif
 
 
-############## dracut subpackage ##############
-%package dracut
+############## validate subpackage ##############
+%package validate
 
-Summary:  Dracut modules for ignition
-License:  BSD
-URL:      https://%{dracutprovider_prefix}
-Requires: %{name} = %{version}-%{release}
-Requires: dracut
-Requires: dracut-network
-BuildArchitectures: noarch
+Summary:  Validation tool for Ignition configs
+License:  ASL 2.0
 
+Conflicts: ignition < 0.31.0-3
 
-%description dracut
-Dracut modules for ignition to enable ignition services to run in the
-initramfs on boot.
+%description validate
+Ignition is a utility used to manipulate systems during the initramfs.
+This includes partitioning disks, formatting partitions, writing files
+(regular files, systemd units, networkd units, etc.), and configuring
+users. On first boot, Ignition reads its configuration from a source
+of truth (remote URL, network metadata service, hypervisor bridge, etc.)
+and applies the configuration.
+
+This package contains a tool for validating Ignition configurations.
 
 
 %prep
@@ -362,11 +370,12 @@ echo "Building ignition-validate..."
 
 
 %install
-# main package
+# ignition
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
-# dracut subpackage
+
+# ignition-dracut
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
 install -d -p %{buildroot}/%{_sysconfdir}/grub.d
@@ -462,15 +471,15 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE
 %doc README.md code-of-conduct.md CONTRIBUTING.md doc/
 %{_bindir}/%{name}
-%{_bindir}/%{name}-validate
-
-%files dracut
-%doc README.md
-%license LICENSE
 %{dracutlibdir}/modules.d/30ignition
 %{dracutlibdir}/modules.d/99journald-conf
 %{_sysconfdir}/grub.d/*
 %{_prefix}/lib/systemd/system/*.service
+
+%files validate
+%doc README.md
+%license LICENSE
+%{_bindir}/%{name}-validate
 
 %if 0%{?with_devel}
 %files devel -f devel.file-list
@@ -487,7 +496,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %changelog
 * Mon Mar 18 2019 Benjamin Gilbert <bgilbert@backtick.net> - 0.31.0-4.gitf59a653
-- Move some dracut subpackage configuration within the specfile
+- Move dracut modules into main ignition package
+- Move ignition-validate into a subpackage
 
 * Mon Mar 18 2019 Colin Walters <walters@verbum.org> - 0.31.0-3.gitf59a653
 - Backport patch for networking
