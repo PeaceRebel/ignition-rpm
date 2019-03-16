@@ -173,10 +173,10 @@ Provides: bundled(golang(go4.org/errorutil)) = %{version}-03efcb870d84809319ea50
 
 
 %description
-Ignition is a utility used to manipulate systems during the initramfs. 
+Ignition is a utility used to manipulate systems during the initramfs.
 This includes partitioning disks, formatting partitions, writing files
 (regular files, systemd units, networkd units, etc.), and configuring
-users. On first boot, Ignition reads its configuration from a source 
+users. On first boot, Ignition reads its configuration from a source
 of truth (remote URL, network metadata service, hypervisor bridge, etc.)
 and applies the configuration.
 
