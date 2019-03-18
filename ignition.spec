@@ -64,26 +64,21 @@
 %global dracutprovider_tld    com
 %global dracutproject         coreos
 %global dracutrepo            ignition-dracut
-# https://github.com/coreos/ignition-dracut
+# https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          2c699252247fd4eb786b66db30a30b777dcd8468
+%global dracutcommit          0d09097f8bf9f3b0118d629f85c8f06f1becdc1f 
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.31.0
-Release:        4.git%{shortcommit}%{?dist}
+Release:        5.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
-
-Patch0: 0001-grub-find-boot-partition-and-use-it-directly.patch
-Patch1: 0001-02_ignition_firstboot-Enable-networking-if-Ignition-.patch
-# https://github.com/coreos/ignition-dracut/pull/56
-Patch2: dracut-ignition-not-in-path.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -343,9 +338,6 @@ This package contains a tool for validating Ignition configurations.
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
 cd %{dracutrepo}-%{dracutcommit}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 mv LICENSE ../LICENSE.dracut
 
 
@@ -501,6 +493,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Mar 18 2019 Dusty Mabe <dusty@dustymabe.com> - 0.31.0-5.gitf59a653
+- Use the spec2x branch of ignition-dracut upstream
+- * Since ignition-dracut master has moved to supporting ignition
+    spec 3.x we are applying 2.x related fixes to the spec2x
+    branch in the ignition-dracut repo.
+  * Summary of backports: https://github.com/coreos/ignition-dracut/pull/58
+
 * Mon Mar 18 2019 Benjamin Gilbert <bgilbert@backtick.net> - 0.31.0-4.gitf59a653
 - Move dracut modules into main ignition package
 - Move ignition binary out of the PATH
