@@ -10,6 +10,9 @@
         - ignition-run-version:
            dir: ./
            run: /usr/lib/dracut/modules.d/30ignition/ignition --version
+        - ignition-validate-run-version:
+           dir: ./
+           run: /usr/bin/ignition-validate --version
         - ignition-rpm-installed:
            dir: ./
            run: /usr/bin/rpm -q ignition
