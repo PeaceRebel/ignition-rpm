@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          0d09097f8bf9f3b0118d629f85c8f06f1becdc1f 
+%global dracutcommit          73ec3fcbc6b3bc3265586480e2d0ad76a0febb5f
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        0.31.0
-Release:        6.git%{shortcommit}%{?dist}
+Release:        7.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -81,6 +81,7 @@ Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcomm
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
 
 Patch0:         0001-support-coreos.config.-and-ignition.config.patch
+Patch1:         0001-stages-files-Also-relabel-subuid-subgid-files.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -337,6 +338,7 @@ This package contains a tool for validating Ignition configurations.
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
 %patch0 -p1
+%patch1 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -495,6 +497,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Mar 22 2019 Dusty Mabe <dusty@dustymabe.com> - 0.31.0-7.gitf59a653
+- ignition-dracut: Pull in latest from spec2x branch
+    * grub: support overriding network kcmdline args
+- ignition: pull in subuid/subgid files patch from spec2x branch
+    * stages/files: Also relabel subuid/subgid files
+
 * Wed Mar 20 2019 Michael Nguyen <mnguyen@redhat.com> - 0.31.0-6.gitf59a653
 - Backport patch for supporting guestinfo.ignition.config.data
 
