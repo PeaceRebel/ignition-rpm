@@ -362,6 +362,9 @@ export LDFLAGS=%{ldflags}
 export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.chrootCmd=%{_sbindir}/chroot '
 # Enable SELinux relabeling
 export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.selinuxRelabel=true '
+# Tell Ignition to write directly to authorized_keys until FCOS learns to read fragments:
+# https://github.com/coreos/fedora-coreos-tracker/issues/139
+export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.writeAuthorizedKeysFragment=false '
 
 echo "Building ignition..."
 %gobuild -o ./ignition %{import_path}/internal
