@@ -73,12 +73,14 @@
 
 Name:           ignition
 Version:        2.0.0
-Release:        alpha.1.git%{shortcommit}%{?dist}
+Release:        alpha.2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
+
+Patch0:         0001-stages-files-fix-unit-relabeling-to-exclude-DestDir.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -339,6 +341,7 @@ This package contains a tool for validating Ignition configurations.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -485,6 +488,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Mar 27 2019 Benjamin Gilbert <bgilbert@backtick.net> - 2.0.0-alpha.2.git906cf04
+- Backport fix for SELinux relabeling of systemd units
+
 * Wed Mar 27 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-alpha.1.git906cf04
 - New release 2.0.0-alpha
 - ignition-dracut: Go back to master branch
