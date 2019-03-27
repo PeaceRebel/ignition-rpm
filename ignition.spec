@@ -354,8 +354,6 @@ mkdir -p src/%{provider}.%{provider_tld}/%{project}
 ln -s ../../../ src/%{import_path}
 
 export LDFLAGS=%{ldflags}
-# Tell ignition where to find chroot binary
-export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.chrootCmd=%{_sbindir}/chroot '
 # Enable SELinux relabeling
 export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.selinuxRelabel=true '
 
@@ -490,6 +488,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %changelog
 * Wed Mar 27 2019 Benjamin Gilbert <bgilbert@backtick.net> - 2.0.0-alpha.2.git906cf04
 - Backport fix for SELinux relabeling of systemd units
+- Drop obsolete override of chroot path
 
 * Wed Mar 27 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-alpha.1.git906cf04
 - New release 2.0.0-alpha
