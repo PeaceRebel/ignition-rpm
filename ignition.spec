@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          ec9a492ad250cb713c1580c2e8825fe5bb48864b
+%global dracutcommit          85f2e6558c5e1651e2934849b8ad1d74a5c7ad74
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.0.0
-Release:        alpha.2.git%{shortcommit}%{?dist}
+Release:        alpha.3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -486,6 +486,16 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Apr 08 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-alpha.3.git906cf04
+- ignition-dracut: update to latest
+    * dracut/30ignition: link to RHBZ in ignition-complete
+    * dracut/30ignition: add OnFailure= for ExecStop= services
+    * dracut/30ignition: order ExecStop= units before initrd-switch-root.target
+    * dracut/30ignition: re-order directives in remount-sysroot
+    * dracut/30ignition: add missing Before= for mount unit
+    * dracut/30ignition: order ignition-complete.target before initrd.target
+    * module_setup: include cdrom rules for openstack
+
 * Wed Mar 27 2019 Benjamin Gilbert <bgilbert@backtick.net> - 2.0.0-alpha.2.git906cf04
 - Backport fix for SELinux relabeling of systemd units
 - Drop obsolete override of chroot path
