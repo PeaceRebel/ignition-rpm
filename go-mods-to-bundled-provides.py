@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
 '''
     Tiny dumb script that generates virtual bundled `Provides` from a repo that
