@@ -74,7 +74,7 @@
 
 Name:           ignition
 Version:        2.0.0
-Release:        beta.2.git%{shortcommit}%{?dist}
+Release:        beta.3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -373,7 +373,7 @@ ln -s ../../../ src/%{provider_prefix}
 
 export LDFLAGS=%{ldflags}
 # Enable SELinux relabeling
-export LDFLAGS+=' -X github.com/coreos/ignition/internal/distro.selinuxRelabel=true '
+export LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true '
 
 # Modules, baby!
 export GO111MODULE=on
@@ -504,6 +504,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri May 03 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-beta.3.git910e6c6
+- Adapt distro.selinuxRelabel flag path for v2/ move
+
 * Fri May 03 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-beta.2.git910e6c6
 - Bump ignition-dracut dropping CoreOS integration files
 
