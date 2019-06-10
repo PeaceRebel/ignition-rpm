@@ -111,7 +111,6 @@ Obsoletes: ignition-dracut < 0.31.0-3
 # Main rpm package BuildRequires
 %if ! 0%{?with_bundled}
 # Remaining dependencies not included in main packages (sorted)
-BuildRequires: golang(github.com/ajeddeloh/go-json)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/awserr)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials)
@@ -123,6 +122,11 @@ BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
 BuildRequires: golang(github.com/coreos/go-semver/semver)
 BuildRequires: golang(github.com/coreos/go-systemd/dbus)
 BuildRequires: golang(github.com/coreos/go-systemd/unit)
+BuildRequires: golang(github.com/coreos/vcontext/json)
+BuildRequires: golang(github.com/coreos/vcontext/path)
+BuildRequires: golang(github.com/coreos/vcontext/report)
+BuildRequires: golang(github.com/coreos/vcontext/tree)
+BuildRequires: golang(github.com/coreos/vcontext/validate)
 BuildRequires: golang(github.com/google/uuid)
 BuildRequires: golang(github.com/pin/tftp)
 BuildRequires: golang(github.com/vincent-petithory/dataurl)
@@ -134,7 +138,6 @@ BuildRequires: golang(golang.org/x/net/http/httpproxy)
 
 # Main package Provides (generated with go-mods-to-bundled-provides.py | sort)
 %if 0%{?with_bundled}
-Provides: bundled(golang(github.com/ajeddeloh/go-json)) = 0.0.0-20160803184958.git73d058cf8437
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/ec2metadata)) = 1.19.11
@@ -174,6 +177,11 @@ Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query/queryu
 Provides: bundled(golang(github.com/coreos/go-semver/semver)) = 0.3.0
 Provides: bundled(golang(github.com/coreos/go-systemd/unit)) = 0.0.0-20181031085051.git9002847aa142
 Provides: bundled(golang(github.com/coreos/go-systemd/dbus)) = 0.0.0-20181031085051.git9002847aa142
+Provides: bundled(golang(github.com/coreos/vcontext/report)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/path)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/tree)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/json)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/validate)) = 0.0.0-20190529201340.git22b159166068
 Provides: bundled(golang(github.com/godbus/dbus)) = 0.0.0-20181025153459.git66d97aec3384
 Provides: bundled(golang(github.com/google/uuid)) = 1.1.1
 Provides: bundled(golang(github.com/pin/tftp)) = 2.1.0
@@ -214,7 +222,6 @@ License:       ASL 2.0
 # devel subpackage BuildRequires
 %if 0%{?with_check} && ! 0%{?with_bundled}
 # These buildrequires are only for our tests (check) (sorted)
-BuildRequires: golang(github.com/ajeddeloh/go-json)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/awserr)
 BuildRequires: golang(github.com/aws/aws-sdk-go/aws/credentials)
@@ -226,6 +233,11 @@ BuildRequires: golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
 BuildRequires: golang(github.com/coreos/go-semver/semver)
 BuildRequires: golang(github.com/coreos/go-systemd/dbus)
 BuildRequires: golang(github.com/coreos/go-systemd/unit)
+BuildRequires: golang(github.com/coreos/vcontext/json)
+BuildRequires: golang(github.com/coreos/vcontext/path)
+BuildRequires: golang(github.com/coreos/vcontext/report)
+BuildRequires: golang(github.com/coreos/vcontext/tree)
+BuildRequires: golang(github.com/coreos/vcontext/validate)
 BuildRequires: golang(github.com/google/uuid)
 BuildRequires: golang(github.com/pin/tftp)
 BuildRequires: golang(github.com/vincent-petithory/dataurl)
@@ -237,7 +249,6 @@ BuildRequires: golang(golang.org/x/net/http/httpproxy)
 
 # devel subpackage Requires. This is basically the source code from
 # all of the libraries that ignition imports during build. (sorted)
-Requires:      golang(github.com/ajeddeloh/go-json)
 Requires:      golang(github.com/aws/aws-sdk-go/aws)
 Requires:      golang(github.com/aws/aws-sdk-go/aws/awserr)
 Requires:      golang(github.com/aws/aws-sdk-go/aws/credentials)
@@ -249,6 +260,11 @@ Requires:      golang(github.com/aws/aws-sdk-go/service/s3/s3manager)
 Requires:      golang(github.com/coreos/go-semver/semver)
 Requires:      golang(github.com/coreos/go-systemd/dbus)
 Requires:      golang(github.com/coreos/go-systemd/unit)
+Requires:      golang(github.com/coreos/vcontext/json)
+Requires:      golang(github.com/coreos/vcontext/path)
+Requires:      golang(github.com/coreos/vcontext/report)
+Requires:      golang(github.com/coreos/vcontext/tree)
+Requires:      golang(github.com/coreos/vcontext/validate)
 Requires:      golang(github.com/google/uuid)
 Requires:      golang(github.com/pin/tftp)
 Requires:      golang(github.com/vincent-petithory/dataurl)
@@ -273,10 +289,6 @@ Provides:      golang(%{import_path}/config/v3_1_experimental) = %{version}-%{re
 Provides:      golang(%{import_path}/config/v3_1_experimental/translate) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/v3_1_experimental/types) = %{version}-%{release}
 Provides:      golang(%{import_path}/config/validate) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/validate/astjson) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/validate/astnode) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/validate/report) = %{version}-%{release}
-Provides:      golang(%{import_path}/config/validate/util) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/negative/files) = %{version}-%{release}
 Provides:      golang(%{import_path}/tests/negative/filesystems) = %{version}-%{release}
