@@ -49,13 +49,12 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          910e6c66b5f5c8f45ac0f4846af846f4715ae8e1
+%global commit          0c1da80127dcfcae86487929aea971a1442477d5
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
 # for consistency
-# TODO remove -beta when stablizing
-%global ldflags ' -X github.com/coreos/ignition/v2/internal/version.Raw=%{version}-beta '
+%global ldflags ' -X github.com/coreos/ignition/v2/internal/version.Raw=%{version} '
 %global buildflags %nil
 %global testflags %nil
 
@@ -74,7 +73,7 @@
 
 Name:           ignition
 Version:        2.0.0
-Release:        beta.3.git%{shortcommit}%{?dist}
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -504,6 +503,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Jun 10 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.0.0-1.git0c1da80
+- New release 2.0.0
+
 * Fri May 03 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.0-beta.3.git910e6c6
 - Adapt distro.selinuxRelabel flag path for v2/ move
 
