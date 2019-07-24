@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          0c1da80127dcfcae86487929aea971a1442477d5
+%global commit          e75cf24183d7ebb86babf517e69fda6f3ca8f13d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -72,8 +72,8 @@
 
 
 Name:           ignition
-Version:        2.0.0
-Release:        2.git%{shortcommit}%{?dist}
+Version:        2.0.1
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -515,6 +515,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+=======
+* Thu Jul 25 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.0.1-1.gite75cf24
+- New release 2.0.1
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.0-2.git0c1da80
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
