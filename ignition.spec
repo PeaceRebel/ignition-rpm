@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.0.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -515,6 +515,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.0-2.git0c1da80
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Mon Jun 10 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.0.0-1.git0c1da80
 - New release 2.0.0
 
