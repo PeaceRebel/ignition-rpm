@@ -515,7 +515,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
-=======
 * Thu Jul 25 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.0.1-1.gite75cf24
 - New release 2.0.1
 
