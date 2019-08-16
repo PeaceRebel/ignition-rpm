@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          df88988f2f0791ca9ea1e14298c8523501d980c5
+%global dracutcommit          343b886954fe8be02755d3690f627920e6123afd
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.0.1
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -515,6 +515,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Aug 16 2019 Colin Walters <walters@verbum.org> - 2.0.1-2.gite75cf24
+- Update dracut for gpt fixes
+
 * Thu Jul 25 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.0.1-1.gite75cf24
 - New release 2.0.1
 
