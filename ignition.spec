@@ -491,8 +491,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %files
 %license LICENSE LICENSE.dracut
 %doc README.md doc/
-%{dracutlibdir}/modules.d/30ignition
-%{dracutlibdir}/modules.d/99journald-conf
+%{dracutlibdir}/modules.d/*
 %{_sysconfdir}/grub.d/*
 %{_prefix}/lib/systemd/system/*.service
 
