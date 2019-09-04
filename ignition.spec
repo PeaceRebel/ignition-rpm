@@ -105,6 +105,7 @@ Requires: dosfstools
 Requires: gdisk
 Requires: dracut
 Requires: dracut-network
+Requires: util-linux >= 2.33
 
 Obsoletes: ignition-dracut < 0.31.0-3
 
