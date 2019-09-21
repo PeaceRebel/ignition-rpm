@@ -73,27 +73,16 @@
 
 Name:           ignition
 Version:        2.0.1
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
 
-# For RHEL7 we'll want to specify gopath and list of arches since there is no
-# gopath or go_arches macro.  We'll also want to make sure we pull in golang
-# 1.10 require golang >= 1.10
-%if 0%{?rhel} <= 7 && 0%{?centos} == 0
 %define gopath %{_datadir}/gocode
-ExclusiveArch: x86_64 ppc64le aarch64 s390x
+ExcludeArch: ppc64
 BuildRequires: golang >= 1.10
-%else
-# e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
-# If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
-BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
-%endif
-
 # add non golang BuildRequires that weren't detected
 BuildRequires: libblkid-devel
 
@@ -514,6 +503,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sat Sep 21 2019 Peter Robinson <pbrobinson@fedoraproject.org> 2.0.1-3.gite75cf24
+- Fix up arch dependencies for new golang specs
+
 * Fri Aug 16 2019 Colin Walters <walters@verbum.org> - 2.0.1-2.gite75cf24
 - Update dracut for gpt fixes
 
