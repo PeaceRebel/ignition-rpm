@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          3d08487b6173d4e1ce875dc47fd7fd6fb3eaa628
+%global dracutcommit          8bf2cbd513f9ad496980abbe9c265683d15f23f1
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.0.1
-Release:        5.git%{shortcommit}%{?dist}
+Release:        6.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -503,6 +503,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Dec 04 2019 Allen Bai <abai@redhat.com> - 2.0.1-6.git641ec6a
+- Update dracut to latest spec2x
+    * firstboot-complete: tell zipl to run
+
 * Thu Oct 31 2019 Colin Walters <walters@verbum.org> - 2.0.1-5.git641ec6a
 - Update dracut
 
