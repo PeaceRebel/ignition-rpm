@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.0.1
-Release:        6.git%{shortcommit}%{?dist}
+Release:        7.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -88,7 +88,7 @@ BuildRequires: libblkid-devel
 
 # Requires for 'disks' stage
 %if 0%{?fedora}
-Requires: btrfs-progs
+Recommends: btrfs-progs
 %endif
 Requires: dosfstools
 Requires: gdisk
@@ -503,6 +503,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Dec 05 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-7.git641ec6a
+- Don't require btrfs-progs, just recommend it
+  https://github.com/coreos/fedora-coreos-tracker/issues/323
+
 * Wed Dec 04 2019 Allen Bai <abai@redhat.com> - 2.0.1-6.git641ec6a
 - Update dracut to latest spec2x
     * firstboot-complete: tell zipl to run
