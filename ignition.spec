@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          641ec6a44062f956bf1d46cf10824032a1996590
+%global commit          a8f91fa826247c0a82deac359065ff453e30c79a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.0.1
-Release:        7.git%{shortcommit}%{?dist}
+Release:        8.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -503,6 +503,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Dec 06 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-8.gita8f91fa
+- Bump Ignition for that sweet SELinux labeling:
+  https://github.com/coreos/ignition/pull/846
+
 * Thu Dec 05 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-7.git641ec6a
 - Don't require btrfs-progs, just recommend it
   https://github.com/coreos/fedora-coreos-tracker/issues/323
