@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          8bf2cbd513f9ad496980abbe9c265683d15f23f1
+%global dracutcommit          736459e788b73ba62b8a04d0395519c033ddbcf5
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.0.1
-Release:        8.git%{shortcommit}%{?dist}
+Release:        9.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -503,6 +503,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Dec 09 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-9.gita8f91fa
+- Use the master branch of ignition-dracut, not spec2x
+
 * Fri Dec 06 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-8.gita8f91fa
 - Bump Ignition for that sweet SELinux labeling:
   https://github.com/coreos/ignition/pull/846
