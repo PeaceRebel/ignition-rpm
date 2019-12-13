@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          a8f91fa826247c0a82deac359065ff453e30c79a
+%global commit          40c0b57b7606bd23210059c5554f151776a1d64b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -72,8 +72,8 @@
 
 
 Name:           ignition
-Version:        2.0.1
-Release:        9.git%{shortcommit}%{?dist}
+Version:        2.1.1
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -503,6 +503,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Dec 12 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.1.1-1.git40c0b57
+- New release 2.1.1
+
 * Mon Dec 09 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-9.gita8f91fa
 - Use the master branch of ignition-dracut, not spec2x
 
