@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.1.1
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -355,6 +355,21 @@ and applies the configuration.
 
 This package contains a tool for validating Ignition configurations.
 
+%ifarch x86_64
+############## validate-nonlinux subpackage ##############
+%package validate-nonlinux
+
+Summary:  Validation tool for Ignition configs for MacOS and Windows.
+License:  ASL 2.0
+
+Conflicts: ignition < 0.31.0-3
+
+%description validate-nonlinux
+This package is used to build the MacOS and windows ignition-validate binaries
+through cross-compilation and should not be installed. It is only used for
+building binaries to sign by Fedora release engineering and include on the
+Ignition project's Github releases page.
+%endif
 
 %prep
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
@@ -385,6 +400,18 @@ echo "Building ignition..."
 echo "Building ignition-validate..."
 %gobuild -o ./ignition-validate %{import_path}/validate
 
+%ifarch x86_64
+echo "Building MacOS ignition-validate"
+export GOOS=darwin
+%gobuild -o ./ignition-validate-darwin %{import_path}/validate
+
+echo "Building Windows ignition-validate"
+export GOOS=windows
+%gobuild -o ./ignition-validate-windows %{import_path}/validate
+
+# Set this back, just in case
+export GOOS=linux
+%endif
 
 %install
 # ignition-dracut
@@ -400,6 +427,12 @@ popd >/dev/null
 # ignition
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
+
+%ifarch x86_64
+install -p -m 0755 ./ignition-validate-darwin %{buildroot}%{_bindir}
+install -p -m 0755 ./ignition-validate-windows %{buildroot}%{_bindir}
+%endif
+
 # The ignition binary is only for dracut, and is dangerous to run from
 # the command line.  Install directly into the dracut module dir.
 install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
@@ -489,6 +522,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE
 %{_bindir}/%{name}-validate
 
+%ifarch x86_64
+%files validate-nonlinux
+%license LICENSE
+%{_bindir}/%{name}-validate-darwin
+%{_bindir}/%{name}-validate-windows
+%endif
+
 %if 0%{?with_devel}
 %files devel -f devel.file-list
 %license LICENSE
@@ -503,7 +543,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
-* Fri Dec 12 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.1.1-1.git40c0b57
+* Tue Dec 17 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.1.1-2.git40c0b57
+- Add ignition-validate-nonlinux subpackage. This should not be installed. It
+  is only used for building binaries to sign by Fedora release engineering and
+  include on the Ignition project's Github releases page.
+
+* Fri Dec 13 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.1.1-1.git40c0b57
 - New release 2.1.1
 
 * Mon Dec 09 2019 Jonathan Lebon <jonathan@jlebon.com> - 2.0.1-9.gita8f91fa
