@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          f59a653629be8b1825ed4ff2f9e3d21aa87bd85a
+%global commit          92f874c194d75ea32a4e63e531db3be4689b4850
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -70,18 +70,14 @@
 %global dracutcommit          73ec3fcbc6b3bc3265586480e2d0ad76a0febb5f
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
-
 Name:           ignition
-Version:        0.31.0
-Release:        7.git%{shortcommit}%{?dist}
+Version:        0.34.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
-
-Patch0:         0001-support-coreos.config.-and-ignition.config.patch
-Patch1:         0001-stages-files-Also-relabel-subuid-subgid-files.patch
 
 # For RHEL7 we'll want to specify gopath and list of arches since there is no
 # gopath or go_arches macro.  We'll also want to make sure we pull in golang
@@ -332,13 +328,26 @@ and applies the configuration.
 
 This package contains a tool for validating Ignition configurations.
 
+%ifarch x86_64
+############## validate-nonlinux subpackage ##############
+%package validate-nonlinux
+
+Summary:  Validation tool for Ignition configs for MacOS and Windows.
+License:  ASL 2.0
+
+Conflicts: ignition < 0.31.0-3
+
+%description validate-nonlinux
+This package is used to build the MacOS and windows ignition-validate binaries
+through cross-compilation and should not be installed. It is only used for
+building binaries to sign by Fedora release engineering and include on the
+Ignition project's Github releases page.
+%endif
 
 %prep
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
-%patch1 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -369,6 +378,18 @@ echo "Building ignition..."
 echo "Building ignition-validate..."
 %gobuild -o ./ignition-validate %{import_path}/validate
 
+%ifarch x86_64
+echo "Building MacOS ignition-validate"
+export GOOS=darwin
+%gobuild -o ./ignition-validate-darwin %{import_path}/validate
+
+echo "Building Windows ignition-validate"
+export GOOS=windows
+%gobuild -o ./ignition-validate-windows %{import_path}/validate
+
+# Set this back, just in case
+export GOOS=linux
+%endif
 
 %install
 # ignition-dracut
@@ -385,6 +406,12 @@ popd >/dev/null
 # ignition
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
+
+%ifarch x86_64
+install -p -m 0755 ./ignition-validate-darwin %{buildroot}%{_bindir}
+install -p -m 0755 ./ignition-validate-windows %{buildroot}%{_bindir}
+%endif
+
 # The ignition binary is only for dracut, and is dangerous to run from
 # the command line.  Install directly into the dracut module dir.
 install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
@@ -483,6 +510,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE
 %{_bindir}/%{name}-validate
 
+%ifarch x86_64
+%files validate-nonlinux
+%license LICENSE
+%{_bindir}/%{name}-validate-darwin
+%{_bindir}/%{name}-validate-windows
+%endif
+
 %if 0%{?with_devel}
 %files devel -f devel.file-list
 %license LICENSE
@@ -497,6 +531,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Dec 19 2019 Andrew Jeddeloh <ajeddelo@redhat.com>
+- Update to v0.34.0.
+- Add ignition-validate-nonlinux subpackage. This should not be installed. It
+  is only used for building binaries to sign by Fedora release engineering and
+  include on the Ignition project's Github releases page.
+
 * Fri Mar 22 2019 Dusty Mabe <dusty@dustymabe.com> - 0.31.0-7.gitf59a653
 - ignition-dracut: Pull in latest from spec2x branch
     * grub: support overriding network kcmdline args
