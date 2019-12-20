@@ -73,12 +73,14 @@
 
 Name:           ignition
 Version:        2.1.1
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
+
+Patch0:         0001-stages-files-don-t-relabel-home-and-root-symlinks.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -375,6 +377,7 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -543,6 +546,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Dec 20 2019 Dusty Mabe <dusty@dustymabe.com> - 2.1.1-3.git40c0b57
+- Backport upstream patch to workaround problem booting on live systems
+    - https://github.com/coreos/fedora-coreos-tracker/issues/339
+    - https://github.com/coreos/ignition/pull/907
+
 * Tue Dec 17 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 2.1.1-2.git40c0b57
 - Add ignition-validate-nonlinux subpackage. This should not be installed. It
   is only used for building binaries to sign by Fedora release engineering and
