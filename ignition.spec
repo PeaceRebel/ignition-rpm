@@ -2,7 +2,7 @@
 #     gofed repo2spec --detect github.com/coreos/ignition --commit f7079129b8651ac51dba14c3af65692bb413c1dd  --with-extra --with-build -f
 # With:
 #     gofed/gofed:v1.0.1 docker image
-# Modified by hand for 0.31.0
+# Modified by hand for 0.35.0
 
 # If any of the following macros should be set otherwise,
 # you can wrap any of them with the following conditions:
@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          92f874c194d75ea32a4e63e531db3be4689b4850
+%global commit          7afbeba044a8bf5762609fbb5f352291eeb7ad9a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -67,11 +67,11 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          73ec3fcbc6b3bc3265586480e2d0ad76a0febb5f
+%global dracutcommit          d5d5663bf7676d070bfd0c3b6f9f78c0a49b68e4
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 Name:           ignition
-Version:        0.34.0
+Version:        0.35.0
 Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
@@ -501,6 +501,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE LICENSE.dracut
 %doc README.md doc/
 %{dracutlibdir}/modules.d/30ignition
+%{dracutlibdir}/modules.d/99emergency-timeout
 %{dracutlibdir}/modules.d/99journald-conf
 %{_sysconfdir}/grub.d/*
 %{_prefix}/lib/systemd/system/*.service
@@ -531,7 +532,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
-* Thu Dec 19 2019 Andrew Jeddeloh <ajeddelo@redhat.com>
+* Wed Jan 22 2020 Benjamin Gilbert <bgilbert@redhat.com> - 0.35.0-1.git7afbeba
+- Update to v0.35.0
+- Update to ignition-dracut d5d5663
+- Add 99emergency-timeout Dracut module
+
+* Thu Dec 19 2019 Andrew Jeddeloh <ajeddelo@redhat.com> - 0.34.0-1.git92f874c
 - Update to v0.34.0.
 - Add ignition-validate-nonlinux subpackage. This should not be installed. It
   is only used for building binaries to sign by Fedora release engineering and
