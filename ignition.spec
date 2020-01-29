@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.1.1
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -546,6 +546,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.1-4.git40c0b57
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Dec 20 2019 Dusty Mabe <dusty@dustymabe.com> - 2.1.1-3.git40c0b57
 - Backport upstream patch to workaround problem booting on live systems
     - https://github.com/coreos/fedora-coreos-tracker/issues/339
