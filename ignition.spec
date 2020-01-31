@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          736459e788b73ba62b8a04d0395519c033ddbcf5
+%global dracutcommit          14808e25d77681d252cd0bac18803cce51758a93
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.1.1
-Release:        4.git%{shortcommit}%{?dist}
+Release:        5.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -420,11 +420,9 @@ export GOOS=linux
 # ignition-dracut
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
-install -d -p %{buildroot}/%{_sysconfdir}/grub.d
 pushd %{dracutrepo}-%{dracutcommit} >/dev/null
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
 install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
-install -m 0755 -t %{buildroot}/%{_sysconfdir}/grub.d/ grub/*
 popd >/dev/null
 
 # ignition
@@ -517,7 +515,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE LICENSE.dracut
 %doc README.md doc/
 %{dracutlibdir}/modules.d/*
-%{_sysconfdir}/grub.d/*
 %{_prefix}/lib/systemd/system/*.service
 
 %files validate
@@ -546,6 +543,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Jan 31 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.1.1-5.git40c0b57
+- Bump ignition-dracut for ignition-diskful-subsequent target
+  https://github.com/coreos/ignition-dracut/pull/151
+- Kill grub dropin
+  https://github.com/coreos/ignition-dracut/pull/91
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.1-4.git40c0b57
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
