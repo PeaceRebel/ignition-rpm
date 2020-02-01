@@ -357,12 +357,12 @@ and applies the configuration.
 
 This package contains a tool for validating Ignition configurations.
 
-%ifarch x86_64
 ############## validate-nonlinux subpackage ##############
 %package validate-nonlinux
 
-Summary:  Validation tool for Ignition configs for macOS and Windows
-License:  ASL 2.0
+Summary:   Validation tool for Ignition configs for macOS and Windows
+License:   ASL 2.0
+BuildArch: noarch
 
 Conflicts: ignition < 0.31.0-3
 
@@ -371,7 +371,6 @@ This package contains macOS and Windows ignition-validate binaries built
 through cross-compilation. Do not install it. It is only used for
 building binaries to sign by Fedora release engineering and include on the
 Ignition project's Github releases page.
-%endif
 
 %prep
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
@@ -403,18 +402,19 @@ echo "Building ignition..."
 echo "Building ignition-validate..."
 %gobuild -o ./ignition-validate %{import_path}/validate
 
-%ifarch x86_64
 echo "Building macOS ignition-validate"
+export GOARCH=amd64
 export GOOS=darwin
-%gobuild -o ./ignition-validate-darwin %{import_path}/validate
+%gobuild -o ./ignition-validate-x86_64-apple-darwin %{import_path}/validate
 
 echo "Building Windows ignition-validate"
+export GOARCH=amd64
 export GOOS=windows
-%gobuild -o ./ignition-validate-windows %{import_path}/validate
+%gobuild -o ./ignition-validate-x86_64-pc-windows-gnu.exe %{import_path}/validate
 
 # Set this back, just in case
+export GOARCH=
 export GOOS=linux
-%endif
 
 %install
 # ignition-dracut
@@ -429,10 +429,9 @@ popd >/dev/null
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 
-%ifarch x86_64
-install -p -m 0755 ./ignition-validate-darwin %{buildroot}%{_bindir}
-install -p -m 0755 ./ignition-validate-windows %{buildroot}%{_bindir}
-%endif
+install -d -p %{buildroot}%{_datadir}/ignition
+install -p -m 0644 ./ignition-validate-x86_64-apple-darwin %{buildroot}%{_datadir}/ignition
+install -p -m 0644 ./ignition-validate-x86_64-pc-windows-gnu.exe %{buildroot}%{_datadir}/ignition
 
 # The ignition binary is only for dracut, and is dangerous to run from
 # the command line.  Install directly into the dracut module dir.
@@ -522,12 +521,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %license LICENSE
 %{_bindir}/%{name}-validate
 
-%ifarch x86_64
 %files validate-nonlinux
 %license LICENSE
-%{_bindir}/%{name}-validate-darwin
-%{_bindir}/%{name}-validate-windows
-%endif
+%dir %{_datadir}/ignition
+%{_datadir}/ignition/ignition-validate-x86_64-apple-darwin
+%{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %if 0%{?with_devel}
 %files devel -f devel.file-list
@@ -544,6 +542,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %changelog
 * Sat Feb 01 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.1.1-6.git40c0b57
+- Switch -validate-nonlinux to noarch; move files to /usr/share/ignition
 - Improve -validate-nonlinux descriptive text
 
 * Fri Jan 31 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.1.1-5.git40c0b57
