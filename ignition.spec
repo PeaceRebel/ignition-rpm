@@ -73,7 +73,7 @@
 
 Name:           ignition
 Version:        2.1.1
-Release:        5.git%{shortcommit}%{?dist}
+Release:        6.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -361,14 +361,14 @@ This package contains a tool for validating Ignition configurations.
 ############## validate-nonlinux subpackage ##############
 %package validate-nonlinux
 
-Summary:  Validation tool for Ignition configs for MacOS and Windows.
+Summary:  Validation tool for Ignition configs for macOS and Windows
 License:  ASL 2.0
 
 Conflicts: ignition < 0.31.0-3
 
 %description validate-nonlinux
-This package is used to build the MacOS and windows ignition-validate binaries
-through cross-compilation and should not be installed. It is only used for
+This package contains macOS and Windows ignition-validate binaries built
+through cross-compilation. Do not install it. It is only used for
 building binaries to sign by Fedora release engineering and include on the
 Ignition project's Github releases page.
 %endif
@@ -404,7 +404,7 @@ echo "Building ignition-validate..."
 %gobuild -o ./ignition-validate %{import_path}/validate
 
 %ifarch x86_64
-echo "Building MacOS ignition-validate"
+echo "Building macOS ignition-validate"
 export GOOS=darwin
 %gobuild -o ./ignition-validate-darwin %{import_path}/validate
 
@@ -543,6 +543,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sat Feb 01 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.1.1-6.git40c0b57
+- Improve -validate-nonlinux descriptive text
+
 * Fri Jan 31 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.1.1-5.git40c0b57
 - Bump ignition-dracut for ignition-diskful-subsequent target
   https://github.com/coreos/ignition-dracut/pull/151
