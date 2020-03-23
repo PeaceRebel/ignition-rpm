@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          40c0b57b7606bd23210059c5554f151776a1d64b
+%global commit          2d3ff5862dc9c1dd0cc78e797f42a19964ac1f4c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -67,20 +67,18 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          14808e25d77681d252cd0bac18803cce51758a93
+%global dracutcommit          f67d5876b48652ab09b36d57d51d9f57f1a863b1
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
-Version:        2.1.1
-Release:        6.git%{shortcommit}%{?dist}
+Version:        2.2.1
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
-
-Patch0:         0001-stages-files-don-t-relabel-home-and-root-symlinks.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -174,6 +172,7 @@ Provides: bundled(golang(github.com/coreos/vcontext/tree)) = 0.0.0-2019052920134
 Provides: bundled(golang(github.com/coreos/vcontext/json)) = 0.0.0-20190529201340.git22b159166068
 Provides: bundled(golang(github.com/coreos/vcontext/validate)) = 0.0.0-20190529201340.git22b159166068
 Provides: bundled(golang(github.com/godbus/dbus)) = 0.0.0-20181025153459.git66d97aec3384
+Provides: bundled(golang(github.com/google/renameio)) = 0.1.0
 Provides: bundled(golang(github.com/google/uuid)) = 1.1.1
 Provides: bundled(golang(github.com/pin/tftp)) = 2.1.0
 Provides: bundled(golang(github.com/pin/tftp/netascii)) = 2.1.0
@@ -187,6 +186,7 @@ Provides: bundled(golang(github.com/vmware/vmw-guestinfo/message)) = 0.0.0-20170
 Provides: bundled(golang(github.com/vmware/vmw-ovflib)) = 0.0.0-20170608004843.git1f217b9dc714
 Provides: bundled(golang(golang.org/x/net/http/httpproxy)) = 0.0.0-20190228165749.git92fc7df08ae7
 Provides: bundled(golang(golang.org/x/net/idna)) = 0.0.0-20190228165749.git92fc7df08ae7
+Provides: bundled(golang(golang.org/x/sys/unix)) = 0.0.0-20191110163157.gitd32e6e3b99c4
 Provides: bundled(golang(golang.org/x/text/secure/bidirule)) = 0.3.0
 Provides: bundled(golang(golang.org/x/text/unicode/bidi)) = 0.3.0
 Provides: bundled(golang(golang.org/x/text/unicode/norm)) = 0.3.0
@@ -376,7 +376,6 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -541,6 +540,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Mar 24 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.2.1-1.git2d3ff58
+- New release
+- Bump ignition-dracut for initramfs network teardown
+
 * Sat Feb 01 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.1.1-6.git40c0b57
 - Switch -validate-nonlinux to noarch; move files to /usr/share/ignition
 - Improve -validate-nonlinux descriptive text
