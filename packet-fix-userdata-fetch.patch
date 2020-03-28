@@ -1,0 +1,41 @@
+From 73cbfa847e4319a202c360bd8cd447712d2067bc Mon Sep 17 00:00:00 2001
+From: Benjamin Gilbert <bgilbert@redhat.com>
+Date: Sat, 28 Mar 2020 01:07:54 -0400
+Subject: [PATCH 1/2] resource/url: allow caller-specified headers to override
+ defaults
+
+Set defaults first, then override them with caller-specified headers.
+Fixes default Accept header causing 406 Not Acceptable when fetching
+userdata on Packet.
+
+Fixes: 75d3e2da74ae ("Rework fetch/resource to automatically append required headers")
+---
+ internal/resource/url.go | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/internal/resource/url.go b/internal/resource/url.go
+index c304758..d08964a 100644
+--- a/internal/resource/url.go
++++ b/internal/resource/url.go
+@@ -257,14 +257,14 @@ func (f *Fetcher) fetchFromHTTP(u url.URL, dest io.Writer, opts FetchOptions) er
+ 	// TODO use .Clone() when we have a new enough golang
+ 	// (With Rust, we'd have immutability and wouldn't need to defensively clone)
+ 	headers := make(http.Header)
+-	for k, va := range opts.Headers {
++	for k, va := range configHeaders {
+ 		for _, v := range va {
+-			headers.Add(k, v)
++			headers.Set(k, v)
+ 		}
+ 	}
+-	for k, va := range configHeaders {
++	for k, va := range opts.Headers {
+ 		for _, v := range va {
+-			headers.Add(k, v)
++			headers.Set(k, v)
+ 		}
+ 	}
+ 
+-- 
+2.24.1
+

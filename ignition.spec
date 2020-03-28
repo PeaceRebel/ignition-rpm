@@ -73,12 +73,16 @@
 
 Name:           ignition
 Version:        2.2.1
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
+# Upstream 73cbfa847e4319a202c360bd8cd447712d2067bc
+Patch0:         packet-fix-userdata-fetch.patch
+# Upstream 4c2dcd547b01b2f13ced8d35263ded5fd67fa645
+Patch1:         packet-fix-metadata-fetch.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -376,6 +380,8 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
+%patch1 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -540,6 +546,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sat Mar 28 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.2.1-2.git2d3ff58
+- Fix userdata/metadata fetch on Packet
+
 * Tue Mar 24 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.2.1-1.git2d3ff58
 - New release
 - Bump ignition-dracut for initramfs network teardown
