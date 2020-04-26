@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          6136be3d9d38d7926a61cd4d1b4ba5f9baf0892f
+%global dracutcommit          390779da2c5b7595882a8426e2c9ec9c073c6da4
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.2.1
-Release:        4.git%{shortcommit}%{?dist}
+Release:        5.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -546,6 +546,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Sun Apr 26 2020 Dusty Mabe <dusty@dustymabe.com> - 2.2.1-5.git2d3ff58
+- Update to latest ignition-dracut for network fixes
+  https://github.com/coreos/ignition-dracut/pull/174
+
 * Thu Apr 16 2020 Colin Walters <walters@verbum.org> - 2.2.1-4.git2d3ff58
 - Update to latest ignition-dracut for virtio dump
 
