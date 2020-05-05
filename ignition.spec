@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          2d3ff5862dc9c1dd0cc78e797f42a19964ac1f4c
+%global commit          ee616d5fb3d21babe288877e842ea137f3e68d0d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -67,22 +67,18 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          390779da2c5b7595882a8426e2c9ec9c073c6da4
+%global dracutcommit          7ff38d9716bf982e3f6495d85c6ce91aab72e88d
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
-Version:        2.2.1
-Release:        5.git%{shortcommit}%{?dist}
+Version:        2.3.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
-# Upstream 73cbfa847e4319a202c360bd8cd447712d2067bc
-Patch0:         packet-fix-userdata-fetch.patch
-# Upstream 4c2dcd547b01b2f13ced8d35263ded5fd67fa645
-Patch1:         packet-fix-metadata-fetch.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -132,69 +128,69 @@ BuildRequires: golang(golang.org/x/net/http/httpproxy)
 # Main package Provides (generated with go-mods-to-bundled-provides.py | sort)
 %if 0%{?with_bundled}
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/ec2metadata)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/session)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/awserr)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3manager)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/endpoints)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkio)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/awsutil)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/client)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkuri)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/client/metadata)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/corehandlers)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/request)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/endpointcreds)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/processcreds)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/stscreds)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/csm)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/defaults)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/ini)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/shareddefaults)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/awsutil)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/ec2metadata)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/endpoints)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/request)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/session)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/signer/v4)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/ini)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/s3err)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkio)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkrand)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkuri)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/shareddefaults)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/eventstream)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/eventstream/eventstreamapi)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query/queryutil)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/rest)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/restxml)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3iface)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/internal/sdkrand)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/service/sts)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/aws/credentials/endpointcreds)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query)) = 1.19.11
 Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil)) = 1.19.11
-Provides: bundled(golang(github.com/aws/aws-sdk-go/private/protocol/query/queryutil)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3iface)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3manager)) = 1.19.11
+Provides: bundled(golang(github.com/aws/aws-sdk-go/service/sts)) = 1.19.11
 Provides: bundled(golang(github.com/coreos/go-semver/semver)) = 0.3.0
-Provides: bundled(golang(github.com/coreos/go-systemd/unit)) = 0.0.0-20181031085051.git9002847aa142
-Provides: bundled(golang(github.com/coreos/go-systemd/dbus)) = 0.0.0-20181031085051.git9002847aa142
-Provides: bundled(golang(github.com/coreos/vcontext/report)) = 0.0.0-20190529201340.git22b159166068
-Provides: bundled(golang(github.com/coreos/vcontext/path)) = 0.0.0-20190529201340.git22b159166068
-Provides: bundled(golang(github.com/coreos/vcontext/tree)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/go-systemd/v22/dbus)) = 22.0.0
+Provides: bundled(golang(github.com/coreos/go-systemd/v22/journal)) = 22.0.0
+Provides: bundled(golang(github.com/coreos/go-systemd/v22/unit)) = 22.0.0
 Provides: bundled(golang(github.com/coreos/vcontext/json)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/path)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/report)) = 0.0.0-20190529201340.git22b159166068
+Provides: bundled(golang(github.com/coreos/vcontext/tree)) = 0.0.0-20190529201340.git22b159166068
 Provides: bundled(golang(github.com/coreos/vcontext/validate)) = 0.0.0-20190529201340.git22b159166068
-Provides: bundled(golang(github.com/godbus/dbus)) = 0.0.0-20181025153459.git66d97aec3384
 Provides: bundled(golang(github.com/google/renameio)) = 0.1.0
 Provides: bundled(golang(github.com/google/uuid)) = 1.1.1
 Provides: bundled(golang(github.com/pin/tftp)) = 2.1.0
 Provides: bundled(golang(github.com/pin/tftp/netascii)) = 2.1.0
 Provides: bundled(golang(github.com/stretchr/testify/assert)) = 1.3.0
 Provides: bundled(golang(github.com/vincent-petithory/dataurl)) = 0.0.0-20160330182126.git9a301d65acbb
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcvmx)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/vmcheck)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcout)) = 0.0.0-20170707015358.git25eff159a728
 Provides: bundled(golang(github.com/vmware/vmw-guestinfo/bdoor)) = 0.0.0-20170707015358.git25eff159a728
 Provides: bundled(golang(github.com/vmware/vmw-guestinfo/message)) = 0.0.0-20170707015358.git25eff159a728
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcout)) = 0.0.0-20170707015358.git25eff159a728
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcvmx)) = 0.0.0-20170707015358.git25eff159a728
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/vmcheck)) = 0.0.0-20170707015358.git25eff159a728
 Provides: bundled(golang(github.com/vmware/vmw-ovflib)) = 0.0.0-20170608004843.git1f217b9dc714
 Provides: bundled(golang(golang.org/x/net/http/httpproxy)) = 0.0.0-20190228165749.git92fc7df08ae7
 Provides: bundled(golang(golang.org/x/net/idna)) = 0.0.0-20190228165749.git92fc7df08ae7
 Provides: bundled(golang(golang.org/x/sys/unix)) = 0.0.0-20191110163157.gitd32e6e3b99c4
 Provides: bundled(golang(golang.org/x/text/secure/bidirule)) = 0.3.0
+Provides: bundled(golang(golang.org/x/text/transform)) = 0.3.0
 Provides: bundled(golang(golang.org/x/text/unicode/bidi)) = 0.3.0
 Provides: bundled(golang(golang.org/x/text/unicode/norm)) = 0.3.0
-Provides: bundled(golang(golang.org/x/text/transform)) = 0.3.0
 %endif
 
 
@@ -380,8 +376,6 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
-%patch1 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -546,6 +540,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue May 05 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.3.0-1.gitee616d5
+- New release
+- Bump ignition-dracut
+
 * Sun Apr 26 2020 Dusty Mabe <dusty@dustymabe.com> - 2.2.1-5.git2d3ff58
 - Update to latest ignition-dracut for network fixes
   https://github.com/coreos/ignition-dracut/pull/174
