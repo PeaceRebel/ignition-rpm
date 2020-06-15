@@ -67,13 +67,13 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          8f5d1ec1189342bfcc896794ba875cc6ad6c7a5c
+%global dracutcommit          bdf0a653584eb07b3ea87078ff427473821bdc2c
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
 Version:        2.3.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
@@ -540,6 +540,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Mon Jun 15 2020 Timothée Ravier <travier@redhat.com> - 2.3.0-3.gitee616d5
+- Update to latest ignition-dracut to fix coreos-gpt-setup unit
+  https://github.com/coreos/ignition-dracut/pull/191
+
 * Mon Jun 01 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.3.0-2.gitee616d5
 - Update to latest ignition-dracut to fix error handling
   https://github.com/coreos/ignition-dracut/pull/188
