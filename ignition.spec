@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          d18bf905455ba53c4363d2adbfb1d6777a1be315
+%global commit          5260a5b355e287bbd4f4830d7c13ccbb87bd48b3
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -67,20 +67,18 @@
 # https://github.com/coreos/ignition-dracut spec2x branch
 %global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
 %global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          e75fef0aad283f052d0344884cbaa08025aca5e0
+%global dracutcommit          6b1d128c6ba2d77825d214ada238a4826e420d40
 %global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
 
 
 Name:           ignition
-Version:        2.4.0
-Release:        2.git%{shortcommit}%{?dist}
+Version:        2.4.1
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0 and BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
-
-Patch0: 0001-files-don-t-relabel-homedir-symlinks-themselves.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -444,7 +442,6 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
 
 # unpack source1 (dracut modules)
 %setup -T -D -a 1 -q -n %{repo}-%{commit}
@@ -609,6 +606,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Jul 16 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.4.1-1.git5260a5b
+- New release
+- Bump ignition-dracut to fix warning in udev rule
+
 * Wed Jul 15 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.4.0-2.gitd18bf90
 - Backport root homedir relabeling fix
   https://github.com/coreos/ignition/pull/1029 for
