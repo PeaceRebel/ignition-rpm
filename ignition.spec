@@ -18,7 +18,7 @@
 # rhel specific macros, you can use %%if 0%%{?rhel} && 0%%{?centos} == 0 condition.
 # (Don't forget to replace double percentage symbol with single one in order to apply a condition)
 
-# Not all devel deps exist in Fedora so you can't install the devel rpm 
+# Not all devel deps exist in Fedora so you can't install the devel rpm
 # so we need to build without devel for now
 # Generate devel rpm
 %global with_devel 0
@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          5260a5b355e287bbd4f4830d7c13ccbb87bd48b3
+%global commit          0d6f3e5e859821134cd04fcaf47c2488c25aff0d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -57,28 +57,15 @@
 %global ldflags ' -X github.com/coreos/ignition/v2/internal/version.Raw=%{version} '
 %global buildflags %nil
 %global testflags %nil
-
-# macros for ignition-dracut
-%global dracutlibdir          %{_prefix}/lib/dracut
-%global dracutprovider        github
-%global dracutprovider_tld    com
-%global dracutproject         coreos
-%global dracutrepo            ignition-dracut
-# https://github.com/coreos/ignition-dracut spec2x branch
-%global dracutprovider_prefix %{dracutprovider}.%{dracutprovider_tld}/%{dracutproject}/%{dracutrepo}
-%global dracutimport_path     %{dracutprovider_prefix}
-%global dracutcommit          6b1d128c6ba2d77825d214ada238a4826e420d40
-%global dracutshortcommit     %(c=%{dracutcommit}; echo ${c:0:7})
-
+%global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Version:        2.4.1
+Version:        2.5.0
 Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
-License:        ASL 2.0 and BSD
+License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1:        https://%{dracutprovider_prefix}/archive/%{dracutcommit}/%{dracutrepo}-%{dracutshortcommit}.tar.gz
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -443,11 +430,6 @@ Ignition project's Github releases page.
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
 
-# unpack source1 (dracut modules)
-%setup -T -D -a 1 -q -n %{repo}-%{commit}
-cd %{dracutrepo}-%{dracutcommit}
-mv LICENSE ../LICENSE.dracut
-
 %build
 # Set up PWD as a proper import path for go
 mkdir -p src/%{provider}.%{provider_tld}/%{project}
@@ -482,13 +464,11 @@ export GOARCH=
 export GOOS=linux
 
 %install
-# ignition-dracut
+# dracut modules
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
-pushd %{dracutrepo}-%{dracutcommit} >/dev/null
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
 install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
-popd >/dev/null
 
 # ignition
 install -d -p %{buildroot}%{_bindir}
@@ -576,7 +556,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{!?_licensedir:%global license %doc}
 
 %files
-%license LICENSE LICENSE.dracut
+%license LICENSE
 %doc README.md doc/
 %{dracutlibdir}/modules.d/*
 %{_prefix}/lib/systemd/system/*.service
@@ -606,6 +586,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Jul 23 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.5.0-1.git0d6f3e5
+- New release
+- Ship support code from Ignition tarball instead of ignition-dracut
+
 * Thu Jul 16 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.4.1-1.git5260a5b
 - New release
 - Bump ignition-dracut to fix warning in udev rule
@@ -807,7 +791,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 * Thu Oct 25 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-10.gitf707912
 - Bump to ignition-dracut decf63f
 - * 03d8438 30ignition: only instmods if module available
-  
+
 * Thu Oct 25 2018 Dusty Mabe <dusty@dustymabe.com> - 0.28.0-9.gitf707912
 - Bump to ignition-dracut 7ee64ca
 - * 3ec0b39 remove ignition-remount-sysroot.service files
