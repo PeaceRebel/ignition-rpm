@@ -61,7 +61,7 @@
 
 Name:           ignition
 Version:        2.5.0
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -586,6 +586,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-2.git0d6f3e5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Thu Jul 23 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.5.0-1.git0d6f3e5
 - New release
 - Ship support code from Ignition tarball instead of ignition-dracut
