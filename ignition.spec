@@ -61,11 +61,13 @@
 
 Name:           ignition
 Version:        2.5.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+
+Patch0: 0001-cloudstack-openstack-propagate-ErrNeedNet.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -429,6 +431,7 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
 
 %build
 # Set up PWD as a proper import path for go
@@ -586,6 +589,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Aug 07 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.5.0-3.git0d6f3e5
+- Backport conditional networking fix for OpenStack and CloudStack
+  https://github.com/coreos/ignition/pull/1057
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-2.git0d6f3e5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
