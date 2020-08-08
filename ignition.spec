@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          0d6f3e5e859821134cd04fcaf47c2488c25aff0d
+%global commit          947598ed908b374c50028f260eb52da9795a4ba4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -60,14 +60,12 @@
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Version:        2.5.0
-Release:        3.git%{shortcommit}%{?dist}
+Version:        2.6.0
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-
-Patch0: 0001-cloudstack-openstack-propagate-ErrNeedNet.patch
 
 %define gopath %{_datadir}/gocode
 ExcludeArch: ppc64
@@ -431,7 +429,6 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
-%patch0 -p1
 
 %build
 # Set up PWD as a proper import path for go
@@ -547,6 +544,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %gotest %{import_path}/config/translate
 %gotest %{import_path}/config/v3_0
 %gotest %{import_path}/config/v3_0/types
+%gotest %{import_path}/config/v3_1
+%gotest %{import_path}/config/v3_1/types
 %gotest %{import_path}/config/validate
 %gotest %{import_path}/internal/exec/stages/files
 %gotest %{import_path}/internal/exec/util
@@ -589,6 +588,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Aug 07 2020 Benjamin Gilbert <bgilbert@redhat.com> - 2.6.0-1.git947598e
+- New release
+
 * Fri Aug 07 2020 Jonathan Lebon <jonathan@jlebon.com> - 2.5.0-3.git0d6f3e5
 - Backport conditional networking fix for OpenStack and CloudStack
   https://github.com/coreos/ignition/pull/1057
