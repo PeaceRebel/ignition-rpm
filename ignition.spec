@@ -49,7 +49,7 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          db4d30d079fd663d0f4c6d59c6fae00ffa268093
+%global commit          c733d23c71fa64722129e8946db49c58cfdea286
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
@@ -60,7 +60,7 @@
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Version:        2.8.0
+Version:        2.8.1
 Release:        1.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
@@ -606,6 +606,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Thu Dec 03 2020 Sohan Kunkerkar <skunkerk@redhat.com> - 2.8.1-1.gitc733d23
+- New release
+
 * Wed Nov 25 2020 Sohan Kunkerkar <skunkerk@redhat.com> - 2.8.0-1.gitdb4d30d
 - New release
 
