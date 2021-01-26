@@ -61,7 +61,7 @@
 
 Name:           ignition
 Version:        2.9.0
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -609,6 +609,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.0-3.git1d56dc8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Tue Jan 12 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.9.0-2.git1d56dc8
 - Fix AWS probing by using the IMDS token URL to ensure that networking is up
 
