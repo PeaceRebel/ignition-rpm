@@ -49,8 +49,6 @@
 # https://github.com/coreos/ignition
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}/v2
-%global commit          1d56dc8e717a10c1a8b392050bcb3d269cd42154
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
 # define ldflags, buildflags, testflags here. The ldflags were
 # taken from ./build. We will need to periodically check these
 # for consistency
@@ -61,11 +59,11 @@
 
 Name:           ignition
 Version:        2.9.0
-Release:        4.git%{shortcommit}%{?dist}
+Release:        4%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
-Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source0:        https://%{provider_prefix}/archive/v%{version}/%{repo}-%{version}.tar.gz
 # Fix AWS probing by using the IMDS token URL to ensure that networking is up
 # https://github.com/coreos/ignition/pull/1161
 Patch0:         internal-providers-aws-probe-the-IMDS-token-URL.patch 
@@ -445,9 +443,8 @@ building binaries to sign by Fedora release engineering and include on the
 Ignition project's Github releases page.
 
 %prep
-# setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
-%setup -T -b 0 -q -n %{repo}-%{commit}
+%setup -q
 %patch0 -p1
 
 %build
@@ -610,7 +607,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
-* Fri Feb 05 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.9.0-4.git1d56dc8
+* Fri Feb 05 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.9.0-4
+- Drop Git commit hash from Release
 - Correctly enable IMDS patch
 - Set ExclusiveArch from %%go_arches
 
