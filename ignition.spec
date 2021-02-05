@@ -61,7 +61,7 @@
 
 Name:           ignition
 Version:        2.9.0
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        First boot installer and configuration tool
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -448,6 +448,7 @@ Ignition project's Github releases page.
 # setup command reference: http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
 # unpack source0 and apply patches
 %setup -T -b 0 -q -n %{repo}-%{commit}
+%patch0 -p1
 
 %build
 # Set up PWD as a proper import path for go
@@ -609,6 +610,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %changelog
+* Fri Feb 05 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.9.0-4.git1d56dc8
+- Correctly enable IMDS patch
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.0-3.git1d56dc8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
