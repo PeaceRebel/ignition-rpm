@@ -443,9 +443,7 @@ building binaries to sign by Fedora release engineering and include on the
 Ignition project's Github releases page.
 
 %prep
-# unpack source0 and apply patches
-%setup -q
-%patch0 -p1
+%autosetup -p1
 
 %build
 # Set up PWD as a proper import path for go
@@ -610,6 +608,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 * Fri Feb 05 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.9.0-4
 - Drop Git commit hash from Release
 - Correctly enable IMDS patch
+- Switch to %%autosetup
 - Set ExclusiveArch from %%go_arches
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.0-3.git1d56dc8
