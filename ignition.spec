@@ -267,10 +267,10 @@ Provides: bundled(golang(go.opencensus.io/trace/tracestate)) = 0.22.5
 %description
 Ignition is a utility used to manipulate systems during the initramfs.
 This includes partitioning disks, formatting partitions, writing files
-(regular files, systemd units, networkd units, etc.), and configuring
-users. On first boot, Ignition reads its configuration from a source
-of truth (remote URL, network metadata service, hypervisor bridge, etc.)
-and applies the configuration.
+(regular files, systemd units, etc.), and configuring users. On first
+boot, Ignition reads its configuration from a source of truth (remote
+URL, network metadata service, hypervisor bridge, etc.) and applies
+the configuration.
 
 ############## devel subpackage ##############
 
@@ -420,10 +420,10 @@ Conflicts: ignition < 0.31.0-3
 %description validate
 Ignition is a utility used to manipulate systems during the initramfs.
 This includes partitioning disks, formatting partitions, writing files
-(regular files, systemd units, networkd units, etc.), and configuring
-users. On first boot, Ignition reads its configuration from a source
-of truth (remote URL, network metadata service, hypervisor bridge, etc.)
-and applies the configuration.
+(regular files, systemd units, etc.), and configuring users. On first
+boot, Ignition reads its configuration from a source of truth (remote
+URL, network metadata service, hypervisor bridge, etc.) and applies
+the configuration.
 
 This package contains a tool for validating Ignition configurations.
 
@@ -610,6 +610,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 - Correctly enable IMDS patch
 - Switch to %%autosetup
 - Set ExclusiveArch from %%go_arches
+- Drop mention of networkd in package description
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.0-3.git1d56dc8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
