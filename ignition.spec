@@ -71,7 +71,7 @@ Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcomm
 Patch0:         internal-providers-aws-probe-the-IMDS-token-URL.patch 
 
 %define gopath %{_datadir}/gocode
-ExcludeArch: ppc64
+ExclusiveArch: %{go_arches}
 BuildRequires: golang >= 1.10
 # add non golang BuildRequires that weren't detected
 BuildRequires: libblkid-devel
@@ -612,6 +612,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %changelog
 * Fri Feb 05 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.9.0-4.git1d56dc8
 - Correctly enable IMDS patch
+- Set ExclusiveArch from %%go_arches
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.0-3.git1d56dc8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
