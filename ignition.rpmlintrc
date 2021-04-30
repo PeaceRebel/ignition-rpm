@@ -1,0 +1,2 @@
+# Suppress hardcoded library path warning
+addFilter("hardcoded-library-path in %{_prefix}/lib/dracut")
