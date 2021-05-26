@@ -13,13 +13,14 @@ Version:                2.10.1
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
+Patch0:         0001-ignition-setup-user.service-drop-Before-multipathd.s.patch
 
 BuildRequires: libblkid-devel
 
@@ -290,6 +291,11 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Wed May 26 2021 Jonathan Lebon <jonathan@jlebon.com> - 2.10.1-3
+- Backport patch for multipath on firstboot
+  https://github.com/coreos/ignition/pull/1208
+  https://github.com/coreos/fedora-coreos-config/pull/1011
+
 * Wed May 26 2021 Jonathan Lebon <jonathan@jlebon.com> - 2.10.1-2
 - Redo packaging using go2rpm
 
