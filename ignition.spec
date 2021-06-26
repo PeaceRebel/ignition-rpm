@@ -4,7 +4,7 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.10.1
+Version:                2.11.0
 
 %gometa
 
@@ -13,14 +13,13 @@ Version:                2.10.1
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
-Patch0:         0001-ignition-setup-user.service-drop-Before-multipathd.s.patch
 
 BuildRequires: libblkid-devel
 
@@ -109,28 +108,12 @@ Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcout)) = 0.0.0-201707
 Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcvmx)) = 0.0.0-20170707015358.git25eff159a728
 Provides: bundled(golang(github.com/vmware/vmw-guestinfo/vmcheck)) = 0.0.0-20170707015358.git25eff159a728
 Provides: bundled(golang(github.com/vmware/vmw-ovflib)) = 0.0.0-20170608004843.git1f217b9dc714
-Provides: bundled(golang(go.opencensus.io)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/internal)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/internal/tagencoding)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/metric/metricdata)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/metric/metricproducer)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/plugin/ochttp)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/plugin/ochttp/propagation/b3)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/resource)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/stats)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/stats/internal)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/stats/view)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/tag)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/trace)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/trace/internal)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/trace/propagation)) = 0.22.5
-Provides: bundled(golang(go.opencensus.io/trace/tracestate)) = 0.22.5
 Provides: bundled(golang(golang.org/x/net/context)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/context/ctxhttp)) = 0.0.0-20200602114024.git627f9648deb9
-Provides: bundled(golang(golang.org/x/net/http/httpguts)) = 0.0.0-20200602114024.git627f9648deb9
-Provides: bundled(golang(golang.org/x/net/http/httpproxy)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/http2)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/http2/hpack)) = 0.0.0-20200602114024.git627f9648deb9
+Provides: bundled(golang(golang.org/x/net/http/httpguts)) = 0.0.0-20200602114024.git627f9648deb9
+Provides: bundled(golang(golang.org/x/net/http/httpproxy)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/idna)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/internal/timeseries)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/trace)) = 0.0.0-20200602114024.git627f9648deb9
@@ -182,6 +165,22 @@ Provides: bundled(golang(google.golang.org/genproto/googleapis/iam/v1)) = 0.0.0-
 Provides: bundled(golang(google.golang.org/genproto/googleapis/rpc/code)) = 0.0.0-20200610104632.gita5b850bcf112
 Provides: bundled(golang(google.golang.org/genproto/googleapis/rpc/status)) = 0.0.0-20200610104632.gita5b850bcf112
 Provides: bundled(golang(google.golang.org/genproto/googleapis/type/expr)) = 0.0.0-20200610104632.gita5b850bcf112
+Provides: bundled(golang(go.opencensus.io)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/internal)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/internal/tagencoding)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/metric/metricdata)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/metric/metricproducer)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/plugin/ochttp)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/plugin/ochttp/propagation/b3)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/resource)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/stats)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/stats/internal)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/stats/view)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/tag)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/trace)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/trace/internal)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/trace/propagation)) = 0.22.5
+Provides: bundled(golang(go.opencensus.io/trace/tracestate)) = 0.22.5
 
 %description
 Ignition is a utility used to manipulate systems during the initramfs.
@@ -291,6 +290,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Fri Jun 25 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.11.0-1
+- New release
+
 * Wed May 26 2021 Jonathan Lebon <jonathan@jlebon.com> - 2.10.1-3
 - Backport patch for multipath on firstboot
   https://github.com/coreos/ignition/pull/1208
