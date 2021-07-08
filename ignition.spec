@@ -13,13 +13,18 @@ Version:                2.11.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
+# https://github.com/coreos/ignition/pull/1245
+Patch0:         drop-ignition-firstboot-complete-2.11.0.patch
+# https://github.com/coreos/ignition/pull/1248
+Patch1:         drop-ignition-setup-base-2.11.0.patch
+Patch2:         drop-ignition-setup-user-2.11.0.patch
 
 BuildRequires: libblkid-devel
 
@@ -250,9 +255,7 @@ GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows
 %install
 # dracut modules
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
-install -d -p %{buildroot}/%{_prefix}/lib/systemd/system
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
-install -m 0644 -t %{buildroot}/%{_prefix}/lib/systemd/system/ systemd/*
 
 # ignition
 install -d -p %{buildroot}%{_bindir}
@@ -276,7 +279,6 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %license %{golicenses}
 %doc %{godocs}
 %{dracutlibdir}/modules.d/*
-%{_prefix}/lib/systemd/system/*.service
 
 %files validate
 %doc README.md
@@ -290,6 +292,10 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Thu Jul  8 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.11.0-2
+- Move ignition-firstboot-complete and ignition-setup-user services out of
+  package into distro glue
+
 * Fri Jun 25 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.11.0-1
 - New release
 
