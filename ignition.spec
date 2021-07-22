@@ -13,7 +13,7 @@ Version:                2.11.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -292,6 +292,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.11.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Jul  8 2021 Benjamin Gilbert <bgilbert@redhat.com> - 2.11.0-2
 - Move ignition-firstboot-complete and ignition-setup-user services out of
   package into distro glue
