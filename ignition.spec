@@ -4,7 +4,7 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.11.0
+Version:                2.12.0
 
 %gometa
 
@@ -13,18 +13,13 @@ Version:                2.11.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
-# https://github.com/coreos/ignition/pull/1245
-Patch0:         drop-ignition-firstboot-complete-2.11.0.patch
-# https://github.com/coreos/ignition/pull/1248
-Patch1:         drop-ignition-setup-base-2.11.0.patch
-Patch2:         drop-ignition-setup-user-2.11.0.patch
 
 BuildRequires: libblkid-devel
 
@@ -292,6 +287,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Fri Aug 6 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-1
+- New release
+
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.11.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
