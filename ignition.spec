@@ -232,7 +232,8 @@ Ignition project's Github releases page.
 %build
 export LDFLAGS="-X github.com/coreos/ignition/v2/internal/version.Raw=%{version} -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true "
 %if 0%{?rhel} || 0%{?centos}
-LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false '
+# Need uncompressed debug symbols for debuginfo extraction
+LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false -compressdwarf=false '
 %endif
 export GOFLAGS="-mod=vendor"
 
@@ -292,6 +293,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %changelog
 * Thu Aug 26 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-2
 - Disable file fragment writing logic for SSH authorized_keys on RHEL/CentOS
+- Disable compressdwarf flag to avoid build failures on RHEL/CentOS
 
 * Fri Aug 6 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-1
 - New release
