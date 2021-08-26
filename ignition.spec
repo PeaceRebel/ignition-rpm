@@ -13,7 +13,7 @@ Version:                2.12.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -231,6 +231,9 @@ Ignition project's Github releases page.
 
 %build
 export LDFLAGS="-X github.com/coreos/ignition/v2/internal/version.Raw=%{version} -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true "
+%if 0%{?rhel} || 0%{?centos}
+LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false '
+%endif
 export GOFLAGS="-mod=vendor"
 
 echo "Building ignition..."
@@ -287,6 +290,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
 
 %changelog
+* Thu Aug 26 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-2
+- Disable file fragment writing logic for SSH authorized_keys on RHEL/CentOS
+
 * Fri Aug 6 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-1
 - New release
 
