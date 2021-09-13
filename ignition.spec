@@ -211,6 +211,7 @@ This package contains a tool for validating Ignition configurations.
 
 ############## validate-nonlinux subpackage ##############
 
+%if 0%{?fedora}
 %package validate-nonlinux
 
 Summary:   Validation tool for Ignition configs for macOS and Windows
@@ -224,6 +225,7 @@ This package contains macOS and Windows ignition-validate binaries built
 through cross-compilation. Do not install it. It is only used for
 building binaries to sign by Fedora release engineering and include on the
 Ignition project's Github releases page.
+%endif
 
 %prep
 %goprep -k
@@ -245,11 +247,13 @@ echo "Building ignition-validate..."
 
 %global gocrossbuild go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x
 
+%if 0%{?fedora}
 echo "Building macOS ignition-validate..."
 GOARCH=amd64 GOOS=darwin %gocrossbuild -o ./ignition-validate-x86_64-apple-darwin validate/main.go
 
 echo "Building Windows ignition-validate..."
 GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows-gnu.exe validate/main.go
+%endif
 
 %install
 # dracut modules
@@ -261,8 +265,10 @@ install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 
 install -d -p %{buildroot}%{_datadir}/ignition
+%if 0%{?fedora}
 install -p -m 0644 ./ignition-validate-x86_64-apple-darwin %{buildroot}%{_datadir}/ignition
 install -p -m 0644 ./ignition-validate-x86_64-pc-windows-gnu.exe %{buildroot}%{_datadir}/ignition
+%endif
 
 # The ignition binary is only for dracut, and is dangerous to run from
 # the command line.  Install directly into the dracut module dir.
@@ -284,16 +290,19 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %license %{golicenses}
 %{_bindir}/ignition-validate
 
+%if 0%{?fedora}
 %files validate-nonlinux
 %license %{golicenses}
 %dir %{_datadir}/ignition
 %{_datadir}/ignition/ignition-validate-x86_64-apple-darwin
 %{_datadir}/ignition/ignition-validate-x86_64-pc-windows-gnu.exe
+%endif
 
 %changelog
 * Thu Aug 26 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-2
 - Disable file fragment writing logic for SSH authorized_keys on RHEL/CentOS
 - Disable compressdwarf flag to avoid build failures on RHEL/CentOS
+- Disable cross-building of Ignition-validate on RHEL/CentOS
 
 * Fri Aug 6 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-1
 - New release
