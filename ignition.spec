@@ -19,13 +19,14 @@ Version:                2.12.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
+Patch0:         0001-internal-change-the-location-of-Ignition-report.patch
 
 BuildRequires: libblkid-devel
 
@@ -309,6 +310,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %endif
 
 %changelog
+* Wed Oct 13 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-3
+- Move Ignition report to /etc 
+
 * Thu Aug 26 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-2
 - Disable file fragment writing logic for SSH authorized_keys on RHEL/CentOS
 - Disable compressdwarf flag to avoid build failures on RHEL/CentOS
