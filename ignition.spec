@@ -238,10 +238,10 @@ Ignition project's Github releases page.
 %prep
 %if 0%{?fedora}
 %goprep -k
+%autopatch -p1
 %else
 %forgeautosetup -p1
 %endif
-%autopatch -p1
 
 %build
 export LDFLAGS="-X github.com/coreos/ignition/v2/internal/version.Raw=%{version} -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true "
@@ -313,6 +313,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %changelog
 * Thu Jan 20 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.13.0-3
 - Fix LUKS volume reuse
+- Avoid double patch application on non-Fedora
 
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
