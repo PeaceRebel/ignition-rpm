@@ -19,13 +19,15 @@ Version:                2.13.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
+# https://github.com/coreos/ignition/pull/1307
+Patch0:         luks-volume-reuse.patch
 
 BuildRequires: libblkid-devel
 
@@ -309,6 +311,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %endif
 
 %changelog
+* Thu Jan 20 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.13.0-3
+- Fix LUKS volume reuse
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
