@@ -2,7 +2,7 @@
 %if 0%{?fedora}
 %bcond_without check
 %else
-# %gocheck isn't currently provided on CentOS/RHEL
+# %%gocheck isn't currently provided on CentOS/RHEL
 # https://bugzilla.redhat.com/show_bug.cgi?id=1982298
 %bcond_with check
 %endif
@@ -332,6 +332,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 * Fri Jan 28 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.13.0-4
 - Rename -validate-nonlinux subpackage to -validate-redistributable
 - Add static Linux binaries to -redistributable
+- Fix macro invocation in comment
 
 * Thu Jan 20 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.13.0-3
 - Fix LUKS volume reuse
