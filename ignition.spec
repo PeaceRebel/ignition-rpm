@@ -19,7 +19,7 @@ Version:                2.13.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -28,6 +28,9 @@ URL:            %{gourl}
 Source0:        %{gosource}
 # https://github.com/coreos/ignition/pull/1307
 Patch0:         luks-volume-reuse.patch
+# vmware: kernel_lockdown breaks guestinfo fetching
+# https://github.com/coreos/ignition/issues/1092
+Patch1:         vendor-vmw-guestinfo-quickfix-to-skip-performing-iop.patch
 
 BuildRequires: libblkid-devel
 
@@ -329,6 +332,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %endif
 
 %changelog
+* Thu Mar 17 2022 Sohan Kunkerkar <skunkerk@redhat.com> - 2.13.0-5
+- Avoid kernel lockdown on VMware when running with secure boot
+
 * Fri Jan 28 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.13.0-4
 - Rename -validate-nonlinux subpackage to -validate-redistributable
 - Add static Linux binaries to -redistributable
