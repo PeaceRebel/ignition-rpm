@@ -10,7 +10,7 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.13.0
+Version:                2.14.0
 
 %gometa
 
@@ -19,20 +19,16 @@ Version:                2.13.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        5%{?dist}
+Release:        1%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
 License:        ASL 2.0
 URL:            %{gourl}
 Source0:        %{gosource}
-# https://github.com/coreos/ignition/pull/1307
-Patch0:         luks-volume-reuse.patch
-# vmware: kernel_lockdown breaks guestinfo fetching
-# https://github.com/coreos/ignition/issues/1092
-Patch1:         vendor-vmw-guestinfo-quickfix-to-skip-performing-iop.patch
 
 BuildRequires: libblkid-devel
+BuildRequires: systemd-rpm-macros
 
 # Requires for 'disks' stage
 %if 0%{?fedora}
@@ -98,6 +94,7 @@ Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3iface)) = 1.30.2
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/s3/s3manager)) = 1.30.28
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/sts)) = 1.30.28
 Provides: bundled(golang(github.com/aws/aws-sdk-go/service/sts/stsiface)) = 1.30.28
+Provides: bundled(golang(github.com/beevik/etree)) = 1.1.1-0.20200718192613.git4a2f8b9d084c
 Provides: bundled(golang(github.com/coreos/go-semver/semver)) = 0.3.0
 Provides: bundled(golang(github.com/coreos/go-systemd/v22/dbus)) = 22.0.0
 Provides: bundled(golang(github.com/coreos/go-systemd/v22/journal)) = 22.0.0
@@ -111,14 +108,14 @@ Provides: bundled(golang(github.com/google/renameio)) = 0.1.0
 Provides: bundled(golang(github.com/google/uuid)) = 1.1.1
 Provides: bundled(golang(github.com/pin/tftp)) = 2.1.0
 Provides: bundled(golang(github.com/pin/tftp/netascii)) = 2.1.0
-Provides: bundled(golang(github.com/stretchr/testify/assert)) = 1.5.1
+Provides: bundled(golang(github.com/spf13/pflag)) = 1.0.6-0.20210604193023.gitd5e0c0615ace
+Provides: bundled(golang(github.com/stretchr/testify/assert)) = 1.7.0
 Provides: bundled(golang(github.com/vincent-petithory/dataurl)) = 1.0.0
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/bdoor)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/message)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcout)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcvmx)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-guestinfo/vmcheck)) = 0.0.0-20170707015358.git25eff159a728
-Provides: bundled(golang(github.com/vmware/vmw-ovflib)) = 0.0.0-20170608004843.git1f217b9dc714
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/bdoor)) = 0.0.0-20220317130741.git510905f0efa3
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/message)) = 0.0.0-20220317130741.git510905f0efa3
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcout)) = 0.0.0-20220317130741.git510905f0efa3
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/rpcvmx)) = 0.0.0-20220317130741.git510905f0efa3
+Provides: bundled(golang(github.com/vmware/vmw-guestinfo/vmcheck)) = 0.0.0-20220317130741.git510905f0efa3
 Provides: bundled(golang(golang.org/x/net/context)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/context/ctxhttp)) = 0.0.0-20200602114024.git627f9648deb9
 Provides: bundled(golang(golang.org/x/net/http2)) = 0.0.0-20200602114024.git627f9648deb9
@@ -284,6 +281,10 @@ GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows
 # dracut modules
 install -d -p %{buildroot}/%{dracutlibdir}/modules.d
 cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
+install -m 0644 -D -t %{buildroot}/%{_unitdir} systemd/ignition-delete-config.service
+install -m 0755 -d %{buildroot}/%{_libexecdir}
+ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-apply
+ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-rmcfg
 
 # ignition
 install -d -p %{buildroot}%{_bindir}
@@ -313,6 +314,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %license %{golicenses}
 %doc %{godocs}
 %{dracutlibdir}/modules.d/*
+%{_unitdir}/*.service
+%{_libexecdir}/ignition-apply
+%{_libexecdir}/ignition-rmcfg
 
 %files validate
 %doc README.md
@@ -332,6 +336,11 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %endif
 
 %changelog
+* Mon May 16 2022 Steven Presti <spresti@redhat.com> - 2.14.0-1
+- New release
+- Add ignition-apply symlink
+- Add ignition-rmcfg symlink and ignition-delete-config.service
+
 * Thu Mar 17 2022 Sohan Kunkerkar <skunkerk@redhat.com> - 2.13.0-5
 - Avoid kernel lockdown on VMware when running with secure boot
 
