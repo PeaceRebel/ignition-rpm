@@ -19,7 +19,7 @@ Version:                2.14.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -272,6 +272,7 @@ CGO_ENABLED=0 GOARCH=amd64 GOOS=linux %gocrossbuild -o ./ignition-validate-x86_6
 
 echo "Building macOS ignition-validate..."
 GOARCH=amd64 GOOS=darwin %gocrossbuild -o ./ignition-validate-x86_64-apple-darwin validate/main.go
+GOARCH=arm64 GOOS=darwin %gocrossbuild -o ./ignition-validate-aarch64-apple-darwin validate/main.go
 
 echo "Building Windows ignition-validate..."
 GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows-gnu.exe validate/main.go
@@ -292,6 +293,7 @@ install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 
 %if 0%{?fedora}
 install -d -p %{buildroot}%{_datadir}/ignition
+install -p -m 0644 ./ignition-validate-aarch64-apple-darwin %{buildroot}%{_datadir}/ignition
 install -p -m 0644 ./ignition-validate-aarch64-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
 install -p -m 0644 ./ignition-validate-ppc64le-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
 install -p -m 0644 ./ignition-validate-s390x-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
@@ -327,6 +329,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %files validate-redistributable
 %license %{golicenses}
 %dir %{_datadir}/ignition
+%{_datadir}/ignition/ignition-validate-aarch64-apple-darwin
 %{_datadir}/ignition/ignition-validate-aarch64-unknown-linux-gnu-static
 %{_datadir}/ignition/ignition-validate-ppc64le-unknown-linux-gnu-static
 %{_datadir}/ignition/ignition-validate-s390x-unknown-linux-gnu-static
@@ -336,6 +339,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %endif
 
 %changelog
+* Mon Jun 27 2022 Benjamin Gilbert <bgilbert@redhat.com> - 2.14.0-3
+- Add macOS aarch64 binary to -redistributable
+
 * Sat Jun 18 2022 Robert-André Mauchin <zebob.m@gmail.com> - 2.14.0-2
 - Rebuilt for CVE-2022-1996, CVE-2022-24675, CVE-2022-28327, CVE-2022-27191,
   CVE-2022-29526, CVE-2022-30629
