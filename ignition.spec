@@ -33,7 +33,8 @@ Source1:        https://github.com/fedora-iot/ignition-edge/archive/%{ignedgecom
 
 BuildRequires: libblkid-devel
 BuildRequires: systemd-rpm-macros
-ExcludeArch: %{ix86} 
+
+ExcludeArch: %{ix86}
 
 # Requires for 'disks' stage
 %if 0%{?fedora}
@@ -226,7 +227,7 @@ Ignition on IoT/Edge systems.
 
 %package ignition-grub
 
-Summary:  Enablement glue for bootupd's grub2 config 
+Summary:  Enablement glue for bootupd's grub2 config
 License:  Apache-2.0
 
 %description ignition-grub
@@ -446,7 +447,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 - New release
 
 * Wed Oct 13 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-3
-- Move Ignition report to /etc 
+- Move Ignition report to /etc
 
 * Thu Aug 26 2021 Sohan Kunkerkar <skunkerk@redhat.com> - 2.12.0-2
 - Disable file fragment writing logic for SSH authorized_keys on RHEL/CentOS
