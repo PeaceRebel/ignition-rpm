@@ -367,7 +367,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 * Fri Jan 17 2025 Fedora Release Engineering <releng@fedoraproject.org> - 2.20.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
 
-* Mon Oct 31 2024 Miguel Martín <mmartinv@redhat.com> - 2.20.0-2
+* Tue Nov 05 2024 Miguel Martín <mmartinv@redhat.com> - 2.20.0-2
 - Update ignition-edge commit to include
     - https://github.com/fedora-iot/ignition-edge/pull/2
 
