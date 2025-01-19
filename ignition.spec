@@ -262,7 +262,7 @@ echo "Building ignition..."
 echo "Building ignition-validate..."
 %gobuild -o ./ignition-validate validate/main.go
 
-%global gocrossbuild go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x
+%global gocrossbuild go build -ldflags "${LDFLAGS:-} -B 0x$(cat /dev/urandom | tr -d -c '0-9a-f' | head -c16)" -a -v -x
 
 %if 0%{?fedora}
 echo "Building statically-linked Linux ignition-validate..."
