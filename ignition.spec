@@ -22,7 +22,7 @@ Version:                2.20.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -30,6 +30,10 @@ License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
 Source1:        https://github.com/fedora-iot/ignition-edge/archive/%{ignedgecommit}/ignition-edge-%{ignedgeshortcommit}.tar.gz
+
+# Upstream PR #2000 (merged, not yet released)
+# See: github.com/coreos/ignition/pull/2000
+Patch0:        ignition-2.20.0-go-1.24-compat.patch
 
 BuildRequires: libblkid-devel
 BuildRequires: systemd-rpm-macros
@@ -364,6 +368,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_libdir}/bootupd/grub2-static/configs.d/ignition.cfg
 
 %changelog
+* Wed Jan 22 2025 FeRD (Frank Dana) <ferdnyc@gmail.com> - 2.20.0-4
+- Apply upstream patch for Go 1.24 compatibility
+
 * Fri Jan 17 2025 Fedora Release Engineering <releng@fedoraproject.org> - 2.20.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
 
