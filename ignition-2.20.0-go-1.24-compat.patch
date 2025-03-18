@@ -1,0 +1,79 @@
+From 116f0b82f7dc19461b5f0b09550c81f3489525ec Mon Sep 17 00:00:00 2001
+From: "FeRD (Frank Dana)" <ferdnyc@gmail.com>
+Date: Sun, 19 Jan 2025 07:59:23 -0500
+Subject: [PATCH 1/2] engine: Add fmt string to Logger.PushPrefix call
+
+The Vet in Go 1.24 will add a new check to the printf analyzer that
+"reports a diagnostic for calls of the form `fmt.Printf(s)`, where
+`s` is a non-constant format string, with no other arguments.
+Such calls are nearly always a mistake as the value of `s` may contain
+the `%` symbol; use `fmt.Print` instead."
+---
+ internal/exec/engine.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/internal/exec/engine.go b/internal/exec/engine.go
+index 11e699cc..f584e518 100644
+--- a/internal/exec/engine.go
++++ b/internal/exec/engine.go
+@@ -121,7 +121,7 @@ func (e Engine) Run(stageName string) error {
+ 		return err
+ 	}
+ 
+-	e.Logger.PushPrefix(stageName) //nolint:govet
++	e.Logger.PushPrefix("%s", stageName)
+ 	defer e.Logger.PopPrefix()
+ 
+ 	fullConfig := latest.Merge(baseConfig, latest.Merge(systemBaseConfig, cfg))
+-- 
+2.47.1
+
+
+From beaeeb449973322adf92f6b5aa26bdf379e7efab Mon Sep 17 00:00:00 2001
+From: "FeRD (Frank Dana)" <ferdnyc@gmail.com>
+Date: Sun, 19 Jan 2025 08:09:41 -0500
+Subject: [PATCH 2/2] main: Add fmt string to logger.Info calls
+
+The Vet in Go 1.24 will add a new check to the printf analyzer that
+"reports a diagnostic for calls of the form `fmt.Printf(s)`, where
+`s` is a non-constant format string, with no other arguments.
+Such calls are nearly always a mistake as the value of `s` may contain
+the `%` symbol; use `fmt.Print` instead."
+---
+ internal/main.go | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/internal/main.go b/internal/main.go
+index 5cebe6a4..7e9e64c6 100644
+--- a/internal/main.go
++++ b/internal/main.go
+@@ -89,7 +89,7 @@ func ignitionMain() {
+ 	logger := log.New(flags.logToStdout)
+ 	defer logger.Close()
+ 
+-	logger.Info(version.String) //nolint:govet
++	logger.Info("%s", version.String)
+ 	logger.Info("Stage: %v", flags.stage)
+ 
+ 	platformConfig := platform.MustGet(flags.platform.String())
+@@ -157,7 +157,7 @@ func ignitionApplyMain() {
+ 	logger := log.New(true)
+ 	defer logger.Close()
+ 
+-	logger.Info(version.String) //nolint:govet
++	logger.Info("%s", version.String)
+ 
+ 	var blob []byte
+ 	var err error
+@@ -219,7 +219,7 @@ func ignitionRmCfgMain() {
+ 	logger := log.New(flags.logToStdout)
+ 	defer logger.Close()
+ 
+-	logger.Info(version.String) //nolint:govet
++	logger.Info("%s", version.String)
+ 
+ 	platformConfig := platform.MustGet(flags.platform)
+ 	fetcher, err := platformConfig.NewFetcher(&logger)
+-- 
+2.47.1
+
