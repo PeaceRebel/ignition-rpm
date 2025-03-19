@@ -307,8 +307,8 @@ ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/i
 ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-rmcfg
 
 # ignition-grub
-install -d -p %{buildroot}%{_libdir}/bootupd/grub2-static/configs.d
-install -p -m 0644 grub2/ignition.cfg  %{buildroot}%{_libdir}/bootupd/grub2-static/configs.d/
+install -d -p %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d
+install -p -m 0644 grub2/ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
 
 # ignition
 install -d -p %{buildroot}%{_bindir}
@@ -379,9 +379,13 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %files ignition-grub
 %doc README.md
 %license %{golicenses}
-%{_libdir}/bootupd/grub2-static/configs.d/ignition.cfg
+%{_prefix}/lib/bootupd/grub2-static/configs.d/ignition.cfg
 
 %changelog
+* Wed Mar 19 2025 Steven Presti <spresti@redhat.com> - 2.21.0-2
+- Update grub2 config to use the correct dir for bootupd static grub configs
+  https://github.com/coreos/ignition/pull/2037#issuecomment-2736300056
+
 * Fri Mar 14 2025 Steven Presti <spresti@redhat.com> - 2.21.0-1
 - New Release
 
