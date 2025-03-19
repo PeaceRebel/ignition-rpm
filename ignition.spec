@@ -22,7 +22,7 @@ Version:                2.21.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -242,14 +242,16 @@ License:  Apache-2.0
 This package contains dracut modules, services and binaries needed to enable
 Ignition on IoT/Edge systems.
 
-############## ignition-grub subpackage ##############
+############## grub subpackage ##############
 
-%package ignition-grub
-
+%package grub
 Summary:  Enablement glue for bootupd's grub2 config
 License:  Apache-2.0
 
-%description ignition-grub
+# `ignition-grub` is a rename `ignition-ignition-grub` so let's obsolete `ignition-ignition-grub`
+Obsoletes: ignition-ignition-grub
+
+%description grub
 This package contains the grub2 config which is compatable with bootupd.
 
 %prep
@@ -306,7 +308,7 @@ install -m 0755 -d %{buildroot}/%{_libexecdir}
 ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-apply
 ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-rmcfg
 
-# ignition-grub
+# grub
 install -d -p %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d
 install -p -m 0644 grub2/ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
 
@@ -376,13 +378,14 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_libexecdir}/coreos-ignition-write-issues
 %{_libexecdir}/coreos-check-ssh-keys
 
-%files ignition-grub
+%files grub
 %doc README.md
 %license %{golicenses}
 %{_prefix}/lib/bootupd/grub2-static/configs.d/ignition.cfg
 
 %changelog
 * Wed Mar 19 2025 Steven Presti <spresti@redhat.com> - 2.21.0-2
+- Rename ignition-ignition-grub subpackage to ignition-grub
 - Update grub2 config to use the correct dir for bootupd static grub configs
   https://github.com/coreos/ignition/pull/2037#issuecomment-2736300056
 
