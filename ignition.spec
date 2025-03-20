@@ -31,6 +31,8 @@ URL:            %{gourl}
 Source0:        %{gosource}
 Source1:        https://github.com/fedora-iot/ignition-edge/archive/%{ignedgecommit}/ignition-edge-%{ignedgeshortcommit}.tar.gz
 
+Patch0: 0001-Rename-ignition.cfg-05_ignition.cfg.patch
+
 BuildRequires: libblkid-devel
 BuildRequires: systemd-rpm-macros
 
@@ -310,7 +312,7 @@ ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/i
 
 # grub
 install -d -p %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d
-install -p -m 0644 grub2/ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
+install -p -m 0644 grub2/05_ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
 
 # ignition
 install -d -p %{buildroot}%{_bindir}
@@ -381,10 +383,12 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %files grub
 %doc README.md
 %license %{golicenses}
-%{_prefix}/lib/bootupd/grub2-static/configs.d/ignition.cfg
+%{_prefix}/lib/bootupd/grub2-static/configs.d/05_ignition.cfg
 
 %changelog
 * Wed Mar 19 2025 Steven Presti <spresti@redhat.com> - 2.21.0-2
+- Rename ignition.cfg -> 05_ignition.cfg to mirror upstream
+  additionally backport rename.
 - Rename ignition-ignition-grub subpackage to ignition-grub
 - Update grub2 config to use the correct dir for bootupd static grub configs
   https://github.com/coreos/ignition/pull/2037#issuecomment-2736300056
