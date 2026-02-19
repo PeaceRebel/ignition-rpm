@@ -31,6 +31,8 @@ URL:            %{gourl}
 Source0:        %{gosource}
 Source1:        https://github.com/fedora-iot/ignition-edge/archive/%{ignedgecommit}/ignition-edge-%{ignedgeshortcommit}.tar.gz
 
+# Fix format specifier for systemd version warning (Go 1.26 compatibility)
+Patch0:         0001-fix-systemd-version-warning-format-specifier.patch
 
 BuildRequires: libblkid-devel
 BuildRequires: systemd-rpm-macros
@@ -381,6 +383,7 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %changelog
 * Thu Feb 19 2026 Steven Presti <spresti@redhat.com> - 2.26.0-1
 - New Release
+- Patch format specifier for systemd version warning (Go 1.26 compatibility)
 
 * Tue Feb 03 2026 Maxwell G <maxwell@gtmx.me> - 2.25.1-3
 - Rebuild for https://fedoraproject.org/wiki/Changes/golang1.26
