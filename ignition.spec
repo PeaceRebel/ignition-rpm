@@ -22,7 +22,7 @@ Version:                2.26.0
 %global dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        First boot installer and configuration tool
 
 # Upstream license specification: Apache-2.0
@@ -30,6 +30,7 @@ License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
 Source1:        https://github.com/fedora-iot/ignition-edge/archive/%{ignedgecommit}/ignition-edge-%{ignedgeshortcommit}.tar.gz
+Source2:        91-ignition-authorized-keys-file.conf
 
 # Fix format specifier for systemd version warning (Go 1.26 compatibility)
 Patch0:         0001-fix-systemd-version-warning-format-specifier.patch
@@ -235,6 +236,8 @@ engineering and uploaded to the Ignition GitHub releases page.
 Summary:  Enablement glue for Ignition on IoT/Edge systems
 License:  MIT
 
+Requires: %{name} = %{version}-%{release}
+
 %description edge
 This package contains dracut modules, services and binaries needed to enable
 Ignition on IoT/Edge systems.
@@ -312,6 +315,10 @@ install -p -m 0644 grub2/05_ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/gru
 # ignition
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
+%if 0%{?fedora} && 0%{?fedora} > 43
+install -d -p %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/
+install -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/91-ignition-authorized-keys-file.conf
+%endif
 
 %if 0%{?fedora}
 install -d -p %{buildroot}%{_datadir}/ignition
@@ -343,6 +350,9 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_unitdir}/ignition-delete-config.service
 %{_libexecdir}/ignition-apply
 %{_libexecdir}/ignition-rmcfg
+%if 0%{?fedora} && 0%{?fedora} > 43
+%{_sysconfdir}/ssh/sshd_config.d/91-ignition-authorized-keys-file.conf
+%endif
 
 %files validate
 %doc README.md
@@ -381,6 +391,10 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_prefix}/lib/bootupd/grub2-static/configs.d/05_ignition.cfg
 
 %changelog
+* Mon Mar 30 2026 Timothée Ravier <tim@siosm.fr> - 2.26.0-4
+- F44+: Ship OpenSSH config file specifying AuthorizedKeysFile
+- Have ignition-edge require the matching main ignition package
+
 * Tue Mar 10 2026 Joel Capitao <jcapitao@redhat.com> - 2.26.0-3
 - Revert 'Ship the OpenSSH config file specifying AuthorizedKeysFile'
 
