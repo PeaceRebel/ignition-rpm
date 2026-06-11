@@ -254,15 +254,12 @@ Obsoletes: ignition-ignition-grub
 %description grub
 This package contains the grub2 config which is compatable with bootupd.
 
-%prep
-%if 0%{?fedora}
-%goprep -k
-%autopatch -p1
-%else
-%forgeautosetup -p1
-%endif
+%package integration
+Summary: Integration package for Ignition and distros using systemd
+License:  Apache-2.0
 
-tar xvf %{SOURCE1}
+%description integration
+This package contains the dracut modules and systemd units for Ignition to work on distros using systemd.
 
 %global ignition_build_ldflags -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true
 %if 0%{?rhel} && 0%{?rhel} <= 8
@@ -279,6 +276,15 @@ tar xvf %{SOURCE1}
 %global ignition_goexperiment strictfipsruntime
 %endif
 
+%prep
+%if 0%{?fedora}
+%goprep -k
+%else
+%forgeautosetup -p1
+%endif
+
+tar xvf %{SOURCE1}
+
 %build
 export GLDFLAGS='%{ignition_build_ldflags}'
 export GOEXPERIMENT='%{?ignition_goexperiment}'
@@ -291,7 +297,7 @@ make ignition-validate-cross BIN_PATH=. VERSION=%{version}
 
 %install
 # dracut modules
-make install BIN_PATH=. DESTDIR=%{buildroot}
+make install BIN_PATH=. DESTDIR=%{buildroot} WITH_INTEGRATION=1
 
 # grub
 make install-grub-for-bootupd DESTDIR=%{buildroot}
@@ -361,9 +367,24 @@ make install-ignition-validate-cross BIN_PATH=. DESTDIR=%{buildroot}
 %license %{golicenses}
 %{_prefix}/lib/bootupd/grub2-static/configs.d/05_ignition.cfg
 
-%changelog
+%files integration
+%{dracutlibdir}/modules.d/01ignition-scsi-rules
+%{dracutlibdir}/modules.d/40ignition-ostree
+%{dracutlibdir}/modules.d/41ignition-network
+%{dracutlibdir}/modules.d/99ignition-log-kmsg
 
-* Wed Jun 24 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.28.0-1
+%{_presetdir}/40-ignition.preset
+
+%{_unitdir}/ignition-write-issues.service
+
+%{_libexecdir}/ignition-write-issues
+%{dracutlibdir}/dracut.conf.d/60-omit-nfs.conf
+
+%changelog
+* Wed Jul 08 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.28.0-2
+- Add new subpackage for integration files (ignition-integration).
+
+* Wed Jul 24 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.28.0-1
 - Use makefile from ignition repo for building and installing the files.
 
 * Mon Mar 30 2026 Timothée Ravier <tim@siosm.fr> - 2.26.0-4
@@ -877,4 +898,3 @@ make install-ignition-validate-cross BIN_PATH=. DESTDIR=%{buildroot}
 
 * Thu Jun 21 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.1.git7610725
 - First package for Fedora
-
