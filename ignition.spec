@@ -13,7 +13,8 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.26.0
+# We need to change this to version once we have the integration files in the main package.
+Version:                a69b090c872465e29518b0bc3dc4752608eb94a2
 
 %gometa
 
@@ -254,10 +255,31 @@ Obsoletes: ignition-ignition-grub
 %description grub
 This package contains the grub2 config which is compatable with bootupd.
 
+%package integration
+Summary: Integration package for Ignition and distros using systemd
+License:  Apache-2.0
+
+%description integration
+This package contains the dracut modules and systemd units for Ignition to work on distros using systemd.
+
+%global ignition_build_ldflags -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true
+%if 0%{?rhel} && 0%{?rhel} <= 8
+# Disable writing ssh keys fragments on RHEL/CentOS <= 8
+%global ignition_build_ldflags %{ignition_build_ldflags} -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false
+%endif
+%if 0%{?rhel}
+# Need uncompressed debug symbols for debuginfo extraction
+%global ignition_build_ldflags %{ignition_build_ldflags} -compressdwarf=false
+%endif
+%if 0%{?rhel}
+# Build ignition with GOEXPERIMENT=strictfipsruntime; ignition-validate stays non-FIPS
+# NOTE: This is only available in Red Hat's FIPS-patched golang.
+%global ignition_goexperiment strictfipsruntime
+%endif
+
 %prep
 %if 0%{?fedora}
 %goprep -k
-%autopatch -p1
 %else
 %forgeautosetup -p1
 %endif
@@ -265,75 +287,31 @@ This package contains the grub2 config which is compatable with bootupd.
 tar xvf %{SOURCE1}
 
 %build
-export LDFLAGS="-X github.com/coreos/ignition/v2/internal/version.Raw=%{version} -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true "
-%if 0%{?rhel} && 0%{?rhel} <= 8
-# Disable writing ssh keys fragments on RHEL/CentOS <= 8
-LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false '
-%endif
-%if 0%{?rhel}
-# Need uncompressed debug symbols for debuginfo extraction
-LDFLAGS+=' -compressdwarf=false '
-%endif
-export GOFLAGS="-mod=vendor"
-
-echo "Building ignition..."
-GOEXPERIMENT=strictfipsruntime %gobuild -o ./ignition internal/main.go
-
-echo "Building ignition-validate..."
-%gobuild -o ./ignition-validate validate/main.go
-
-%global gocrossbuild go build -ldflags "${LDFLAGS:-} -B 0x$(cat /dev/urandom | tr -d -c '0-9a-f' | head -c16)" -a -v -x
-
+export GLDFLAGS='%{ignition_build_ldflags}'
+export GOEXPERIMENT='%{?ignition_goexperiment}'
+make ignition BIN_PATH=. VERSION=%{version}
+unset GOEXPERIMENT
+make ignition-validate BIN_PATH=. VERSION=%{version}
 %if 0%{?fedora}
-echo "Building statically-linked Linux ignition-validate..."
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=arm64 GOOS=linux %gocrossbuild -o ./ignition-validate-aarch64-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=ppc64le GOOS=linux %gocrossbuild -o ./ignition-validate-ppc64le-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=s390x GOOS=linux %gocrossbuild -o ./ignition-validate-s390x-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=amd64 GOOS=linux %gocrossbuild -o ./ignition-validate-x86_64-unknown-linux-gnu-static validate/main.go
-
-echo "Building macOS ignition-validate..."
-GOEXPERIMENT= GOARCH=amd64 GOOS=darwin %gocrossbuild -o ./ignition-validate-x86_64-apple-darwin validate/main.go
-GOEXPERIMENT= GOARCH=arm64 GOOS=darwin %gocrossbuild -o ./ignition-validate-aarch64-apple-darwin validate/main.go
-
-echo "Building Windows ignition-validate..."
-GOEXPERIMENT= GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows-gnu.exe validate/main.go
+make ignition-validate-cross BIN_PATH=. VERSION=%{version}
 %endif
 
 %install
 # dracut modules
-install -d -p %{buildroot}/%{dracutlibdir}/modules.d
-cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
-install -m 0644 -D -t %{buildroot}/%{_unitdir} systemd/ignition-delete-config.service
-install -m 0755 -d %{buildroot}/%{_libexecdir}
-ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-apply
-ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-rmcfg
+make install BIN_PATH=. DESTDIR=%{buildroot} WITH_INTEGRATION=1
 
 # grub
-install -d -p %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d
-install -p -m 0644 grub2/05_ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
+make install-grub-for-bootupd DESTDIR=%{buildroot}
 
 # ignition
-install -d -p %{buildroot}%{_bindir}
-install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 %if 0%{?fedora} && 0%{?fedora} > 43
 install -d -p %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/
 install -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/91-ignition-authorized-keys-file.conf
 %endif
 
 %if 0%{?fedora}
-install -d -p %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-aarch64-apple-darwin %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-aarch64-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-ppc64le-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-s390x-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-apple-darwin %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-pc-windows-gnu.exe %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
+make install-ignition-validate-cross BIN_PATH=. DESTDIR=%{buildroot}
 %endif
-
-# The ignition binary is only for dracut, and is dangerous to run from
-# the command line.  Install directly into the dracut module dir.
-install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 
 %make_install -C ignition-edge-%{ignedgecommit}
 
@@ -389,6 +367,19 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %doc README.md
 %license %{golicenses}
 %{_prefix}/lib/bootupd/grub2-static/configs.d/05_ignition.cfg
+
+%files integration
+%{dracutlibdir}/modules.d/01ignition-scsi-rules
+%{dracutlibdir}/modules.d/40ignition-ostree
+%{dracutlibdir}/modules.d/41ignition-network
+%{dracutlibdir}/modules.d/99ignition-log-kmsg
+
+%{_presetdir}/40-ignition.preset
+
+%{_unitdir}/ignition-write-issues.service
+
+%{_libexecdir}/ignition-write-issues
+%{dracutlibdir}/dracut.conf.d/60-omit-nfs.conf
 
 %changelog
 * Mon Mar 30 2026 Timothée Ravier <tim@siosm.fr> - 2.26.0-4
@@ -902,4 +893,3 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 
 * Thu Jun 21 2018 Dusty Mabe <dusty@dustymabe.com> - 0.26.0-0.1.git7610725
 - First package for Fedora
-
