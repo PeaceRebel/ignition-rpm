@@ -13,7 +13,7 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.26.0
+Version:                2.28.0
 
 %gometa
 
@@ -264,76 +264,47 @@ This package contains the grub2 config which is compatable with bootupd.
 
 tar xvf %{SOURCE1}
 
-%build
-export LDFLAGS="-X github.com/coreos/ignition/v2/internal/version.Raw=%{version} -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true "
+%global ignition_build_ldflags -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true
 %if 0%{?rhel} && 0%{?rhel} <= 8
 # Disable writing ssh keys fragments on RHEL/CentOS <= 8
-LDFLAGS+=' -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false '
+%global ignition_build_ldflags %{ignition_build_ldflags} -X github.com/coreos/ignition/v2/internal/distro.writeAuthorizedKeysFragment=false
 %endif
 %if 0%{?rhel}
 # Need uncompressed debug symbols for debuginfo extraction
-LDFLAGS+=' -compressdwarf=false '
+%global ignition_build_ldflags %{ignition_build_ldflags} -compressdwarf=false
 %endif
-export GOFLAGS="-mod=vendor"
+%if 0%{?rhel}
+# Build ignition with GOEXPERIMENT=strictfipsruntime; ignition-validate stays non-FIPS
+# NOTE: This is only available in Red Hat's FIPS-patched golang.
+%global ignition_goexperiment strictfipsruntime
+%endif
 
-echo "Building ignition..."
-GOEXPERIMENT=strictfipsruntime %gobuild -o ./ignition internal/main.go
-
-echo "Building ignition-validate..."
-%gobuild -o ./ignition-validate validate/main.go
-
-%global gocrossbuild go build -ldflags "${LDFLAGS:-} -B 0x$(cat /dev/urandom | tr -d -c '0-9a-f' | head -c16)" -a -v -x
-
+%build
+export GLDFLAGS='%{ignition_build_ldflags}'
+export GOEXPERIMENT='%{?ignition_goexperiment}'
+make ignition BIN_PATH=. VERSION=%{version}
+unset GOEXPERIMENT
+make ignition-validate BIN_PATH=. VERSION=%{version}
 %if 0%{?fedora}
-echo "Building statically-linked Linux ignition-validate..."
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=arm64 GOOS=linux %gocrossbuild -o ./ignition-validate-aarch64-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=ppc64le GOOS=linux %gocrossbuild -o ./ignition-validate-ppc64le-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=s390x GOOS=linux %gocrossbuild -o ./ignition-validate-s390x-unknown-linux-gnu-static validate/main.go
-GOEXPERIMENT= CGO_ENABLED=0 GOARCH=amd64 GOOS=linux %gocrossbuild -o ./ignition-validate-x86_64-unknown-linux-gnu-static validate/main.go
-
-echo "Building macOS ignition-validate..."
-GOEXPERIMENT= GOARCH=amd64 GOOS=darwin %gocrossbuild -o ./ignition-validate-x86_64-apple-darwin validate/main.go
-GOEXPERIMENT= GOARCH=arm64 GOOS=darwin %gocrossbuild -o ./ignition-validate-aarch64-apple-darwin validate/main.go
-
-echo "Building Windows ignition-validate..."
-GOEXPERIMENT= GOARCH=amd64 GOOS=windows %gocrossbuild -o ./ignition-validate-x86_64-pc-windows-gnu.exe validate/main.go
+make ignition-validate-cross BIN_PATH=. VERSION=%{version}
 %endif
 
 %install
 # dracut modules
-install -d -p %{buildroot}/%{dracutlibdir}/modules.d
-cp -r dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
-install -m 0644 -D -t %{buildroot}/%{_unitdir} systemd/ignition-delete-config.service
-install -m 0755 -d %{buildroot}/%{_libexecdir}
-ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-apply
-ln -sf ../lib/dracut/modules.d/30ignition/ignition %{buildroot}/%{_libexecdir}/ignition-rmcfg
+make install BIN_PATH=. DESTDIR=%{buildroot}
 
 # grub
-install -d -p %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d
-install -p -m 0644 grub2/05_ignition.cfg  %{buildroot}%{_prefix}/lib/bootupd/grub2-static/configs.d/
+make install-grub-for-bootupd DESTDIR=%{buildroot}
 
 # ignition
-install -d -p %{buildroot}%{_bindir}
-install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 %if 0%{?fedora} && 0%{?fedora} > 43
 install -d -p %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/
 install -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/ssh/sshd_config.d/91-ignition-authorized-keys-file.conf
 %endif
 
 %if 0%{?fedora}
-install -d -p %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-aarch64-apple-darwin %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-aarch64-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-ppc64le-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-s390x-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-apple-darwin %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-pc-windows-gnu.exe %{buildroot}%{_datadir}/ignition
-install -p -m 0644 ./ignition-validate-x86_64-unknown-linux-gnu-static %{buildroot}%{_datadir}/ignition
+make install-ignition-validate-cross BIN_PATH=. DESTDIR=%{buildroot}
 %endif
-
-# The ignition binary is only for dracut, and is dangerous to run from
-# the command line.  Install directly into the dracut module dir.
-install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 
 %make_install -C ignition-edge-%{ignedgecommit}
 
@@ -391,6 +362,10 @@ install -p -m 0755 ./ignition %{buildroot}/%{dracutlibdir}/modules.d/30ignition
 %{_prefix}/lib/bootupd/grub2-static/configs.d/05_ignition.cfg
 
 %changelog
+
+* Wed Jun 24 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.28.0-1
+- Use makefile from ignition repo for building and installing the files.
+
 * Mon Mar 30 2026 Timothée Ravier <tim@siosm.fr> - 2.26.0-4
 - F44+: Ship OpenSSH config file specifying AuthorizedKeysFile
 - Have ignition-edge require the matching main ignition package
