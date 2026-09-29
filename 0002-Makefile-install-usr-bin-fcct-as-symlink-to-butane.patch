@@ -1,0 +1,24 @@
+From 6b570eeb1a8a7c72d9293ee4ffdd681074bb005e Mon Sep 17 00:00:00 2001
+From: Bipin B Narayan <bbnaraya@redhat.com>
+Date: Tue, 29 Sep 2026 15:20:00 +0530
+Subject: [PATCH] Makefile: install /usr/bin/fcct as symlink to butane
+
+---
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index 1cd905a0..f33e4c72 100644
+--- a/Makefile
++++ b/Makefile
+@@ -72,6 +72,7 @@ install-ignition-validate-cross:
+ .PHONY: install-butane
+ install-butane:
+ 	install -m 0755 -D -t $(DESTDIR)/usr/bin $(BIN_PATH)/butane
++	ln -sf butane $(DESTDIR)/usr/bin/fcct
+ 
+ # For distros that need to build cross platform butane binaries
+ .PHONY: install-butane-cross
+-- 
+2.55.0
+

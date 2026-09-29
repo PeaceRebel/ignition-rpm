@@ -37,6 +37,9 @@ Source2:        91-ignition-authorized-keys-file.conf
 # https://github.com/coreos/fedora-coreos-tracker/issues/2216
 Patch0:         0001-internal-exec-stages-files-resolve-intermediate-syml.patch
 
+# Install /usr/bin/fcct as a symlink to butane.
+Patch1:         0002-Makefile-install-usr-bin-fcct-as-symlink-to-butane.patch
+
 BuildRequires: libblkid-devel
 BuildRequires: systemd-rpm-macros
 
@@ -413,6 +416,7 @@ make install-butane-cross BIN_PATH=bin DESTDIR=%{buildroot}
 %changelog
 * Tue Sep 29 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.27.0-4
 - Use makefile from ignition repo for building and installing the files.
+- Backport build: install /usr/bin/fcct as symlink to butane
 
 * Mon Sep 14 2026 Rolv Apneseth <rapneset@redhat.com> - 2.27.0-3
 - Backport fix for SELinux relabelling failures when specifying a symlink for home_dir
