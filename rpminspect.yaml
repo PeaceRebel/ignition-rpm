@@ -2,4 +2,4 @@
 debuginfo:
   ignore:
     - /usr/share/ignition/ignition-validate-*-unknown-linux-gnu-static
-
+    - /usr/share/butane/butane-*-unknown-linux-gnu-static
