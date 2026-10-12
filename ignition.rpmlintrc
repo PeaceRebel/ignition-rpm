@@ -1,6 +1,10 @@
+# Redistributable subpackages are Fedora-only, so their filters are unused on
+# ELN builds.
+setBadness("unused-rpmlintrc-filter", 0)
+
 # Ignition sources have duplicate files because of how spec versioning is
-# implemented
-addFilter("ignition-debugsource.x86_64: E: files-duplicated-waste")
+# implemented.
+addFilter("ignition-debugsource.*: E: files-duplicated-waste")
 
 # -validate-redistributable is supposed to have binaries in it, and
 # doesn't really need docs since it isn't user-facing
@@ -12,7 +16,15 @@ addFilter("ignition-validate-redistributable.noarch: W: no-documentation")
 addFilter("ignition-validate-redistributable.noarch: W: obsolete-not-provided ignition-validate-nonlinux")
 
 # "transpiler" is the correct term for what butane does
-addFilter("butane.*: E: spelling-error.*transpiler")
+addFilter("butane.*: W: spelling-error.*transpiler")
+
+# Butane is intentionally statically linked.
+addFilter("butane.*: E: statically-linked-binary /usr/bin/butane")
+
+# These packages intentionally contain enablement configuration rather than
+# executables.
+addFilter("ignition-edge.*: E: no-binary")
+addFilter("ignition-grub.*: E: no-binary")
 
 # -redistributable packages have binaries but are noarch by design,
 # and don't need docs since they aren't user-facing
