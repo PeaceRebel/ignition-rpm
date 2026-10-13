@@ -13,7 +13,7 @@
 # https://github.com/coreos/ignition
 %global goipath         github.com/coreos/ignition
 %global gomodulesmode   GO111MODULE=on
-Version:                2.28.0
+Version:                2.29.0
 
 %gometa
 
@@ -267,15 +267,14 @@ used for building release binaries to be signed by Fedora release
 engineering and uploaded to the Ignition GitHub releases page.
 %endif
 
-%prep
-%if 0%{?fedora}
-%goprep -k
-%autopatch -p1
-%else
-%forgeautosetup -p1
-%endif
+############## integration subpackage ##############
 
-tar xvf %{SOURCE1}
+%package integration
+Summary: Integration package for Ignition and distros using systemd
+License:  Apache-2.0
+
+%description integration
+This package contains the dracut modules and systemd units for Ignition to work on distros using systemd.
 
 %global ignition_build_ldflags -X github.com/coreos/ignition/v2/internal/distro.selinuxRelabel=true
 %if 0%{?rhel} && 0%{?rhel} <= 8
@@ -291,6 +290,15 @@ tar xvf %{SOURCE1}
 # NOTE: This is only available in Red Hat's FIPS-patched golang.
 %global ignition_goexperiment strictfipsruntime
 %endif
+
+%prep
+%if 0%{?fedora}
+%goprep -k
+%else
+%forgeautosetup -p1
+%endif
+
+tar xvf %{SOURCE1}
 
 %build
 export GLDFLAGS='%{ignition_build_ldflags}'
@@ -310,7 +318,7 @@ make butane-cross BIN_PATH=bin VERSION=%{version}
 
 %install
 # dracut modules
-make install BIN_PATH=bin DESTDIR=%{buildroot}
+make install BIN_PATH=bin DESTDIR=%{buildroot} WITH_INTEGRATION=1
 
 # grub
 make install-grub-for-bootupd DESTDIR=%{buildroot}
@@ -405,7 +413,25 @@ make install-butane-cross BIN_PATH=bin DESTDIR=%{buildroot}
 %{_datadir}/butane/butane-x86_64-unknown-linux-gnu-static
 %endif
 
+%files integration
+%{dracutlibdir}/modules.d/01ignition-scsi-rules
+%{dracutlibdir}/modules.d/40ignition-ostree
+%{dracutlibdir}/modules.d/41ignition-network
+%{dracutlibdir}/modules.d/99ignition-log-kmsg
+
+%{_presetdir}/40-ignition.preset
+
+%{_unitdir}/ignition-write-issues.service
+
+%{_libexecdir}/ignition-write-issues
+%{dracutlibdir}/dracut.conf.d/60-omit-nfs.conf
+
+
+
 %changelog
+* Wed Oct 28 2026 Bipin B Narayan <bbnaraya@redhat.com> - 2.29.0-1
+- Add new subpackage for integration files (ignition-integration).
+
 * Mon Oct 12 2026 Steven Presti <spresti@redhat.com> - 2.28.0-1
 - New upstream release
 - Drop patches merged upstream
